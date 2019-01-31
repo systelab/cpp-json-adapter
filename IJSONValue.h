@@ -5,7 +5,7 @@
 #include <vector>
 
 
-namespace systelab { namespace json_adapter {
+namespace systelab { namespace json {
 
 	enum Type
 	{

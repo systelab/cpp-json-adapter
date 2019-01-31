@@ -4,7 +4,7 @@
 #include <string>
 
 
-namespace systelab { namespace json_adapter {
+namespace systelab { namespace json {
 
 	class IJSONValue;
 
