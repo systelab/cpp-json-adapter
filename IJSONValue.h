@@ -38,7 +38,7 @@ namespace systelab { namespace json {
 		// Only for number values
 		virtual bool isInteger() const = 0;
 		virtual int getInteger() const = 0;
-		virtual double getDouble(double) const = 0;
+		virtual double getDouble() const = 0;
 
 		virtual void setInteger(int) = 0;
 		virtual void setLong(long) = 0;
