@@ -24,7 +24,7 @@ namespace systelab { namespace json {
 	public:
 		virtual ~IJSONValue() {};
 
-		virtual Type getType() = 0;
+		virtual Type getType() const = 0;
 		virtual void setType(Type) = 0;
 
 		// Only for boolean values
