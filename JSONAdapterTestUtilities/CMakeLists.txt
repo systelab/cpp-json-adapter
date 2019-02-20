@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 
+# Add project folder into includes
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 # Configure JSON Adapter test utilities project
 set(JSON_ADAPTER_TEST_UTILITIES_PROJECT JSONAdapterTestUtilities)
 file(GLOB_RECURSE JSON_ADAPTER_TEST_UTILITIES_PROJECT_SRC "*.cpp")
