@@ -68,6 +68,9 @@ macro(configure_test_utilities)
 			COMMAND             ${GIT_EXECUTABLE} checkout ${TEST_UTILITIES_BRANCH}
 			WORKING_DIRECTORY   ${CMAKE_SOURCE_DIR}
 			OUTPUT_VARIABLE     git_output)
+			
+	# Add cloned folder into includes
+	include_directories(${CMAKE_SOURCE_DIR}/${TEST_UTILITIES_DIR})	
 endmacro()
 
 
