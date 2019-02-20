@@ -15,8 +15,8 @@ before_build:
   - cmake .. -G "Visual Studio 15 2017 Win64"
 
 build:
-  project: $(APPVEYOR_BUILD_FOLDER)\build\JSONAdapterTestUtilities.sln
+  project: $(APPVEYOR_BUILD_FOLDER)\build\JSONAdapter.sln
    
 artifacts:
-  - path: 'build/$(configuration)/JSONAdapterTestUtilities.lib'
+  - path: 'build/JSONAdapterTestUtilities/$(configuration)/JSONAdapterTestUtilities.lib'
     name: JSONAdapterTestUtilities.lib
