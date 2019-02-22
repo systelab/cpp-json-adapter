@@ -56,6 +56,7 @@ namespace systelab { namespace json {
 		virtual void addMember(const std::string& name, long value) = 0;
 		virtual void addMember(const std::string& name, long long value) = 0;
 		virtual void addMember(const std::string& name, double value) = 0;
+		virtual void addMember(const std::string& name, const char* value) = 0;
 		virtual void addMember(const std::string& name, const std::string& value) = 0;
 		virtual void addMember(const std::string& name, std::unique_ptr<IJSONValue>) = 0;
 		virtual void removeMember(const std::string& name) = 0;

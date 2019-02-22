@@ -39,6 +39,7 @@ namespace systelab { namespace json { namespace test_utility {
 		MOCK_METHOD2(addMember, void(const std::string&, long));
 		MOCK_METHOD2(addMember, void(const std::string&, long long));
 		MOCK_METHOD2(addMember, void(const std::string&, double));
+		MOCK_METHOD2(addMember, void(const std::string&, const char*));
 		MOCK_METHOD2(addMember, void(const std::string&, const std::string&));
 
 		MOCK_METHOD2(addMemberProxy, void(const std::string&, IJSONValue*));
