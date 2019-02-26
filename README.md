@@ -14,7 +14,7 @@ This repository defines a library-agnostic API for C++ to work with JSON documen
 
 ## Available implementations
 
-* RapidJSONAdapter (https://github.com/systelab/cpp-rapidjson-json-adapter)
+* [RapidJSONAdapter](https://github.com/systelab/cpp-rapidjson-json-adapter)
 
 ## Usage
 
