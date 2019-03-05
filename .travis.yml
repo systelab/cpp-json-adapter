@@ -11,12 +11,10 @@ install:
   - sudo apt-get install -qq g++-7
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 90
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
-  - pip install conan --user
-  - conan user
 
 script:
   - g++ --version
   - mkdir -p build
   - cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug
+  - cmake ..
   - make
