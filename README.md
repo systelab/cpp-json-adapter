@@ -19,9 +19,25 @@ This repository defines a library-agnostic API for C++ to work with JSON documen
 
 ## Usage
 
+Use of adapter features begins with an instance of `systelab::json::IJSONAdapter` class. See documentation of selected implementation for details about how to build one.
+
 ### JSON parsing
 
-`Add code snipped here`
+```cpp
+#include "JSONAdapterInterface/IJSONAdapter.h"
+#include "JSONAdapterInterface/IJSONDocument.h"
+#include "JSONAdapterInterface/IJSONValue.h"
+
+std:string jsonToParse = "{\"att1\": true, \"att2\": 123, \"att3\":\"message\"}";
+
+std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...
+auto jsonDocument = jsonAdapter->buildDocumentFromString(jsonToParse);
+std::vector<std::string> memberNames = jsonDocument->getRootValue().getObjectMemberNames();
+for (std::string memberName : memberNames)
+{
+    std::cout << "Member name:" << memberName << std::endl;
+}
+```
 
 ### String serialization
 
