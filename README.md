@@ -30,7 +30,7 @@ Use of adapter features begins with an instance of `systelab::json::IJSONAdapter
 
 std:string jsonToParse = "{\"att1\": true, \"att2\": 123, \"att3\":\"message\"}";
 
-std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...
+std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...;
 auto jsonDocument = jsonAdapter->buildDocumentFromString(jsonToParse);
 
 systelab::json::IJSONValue& rootValue = jsonDocument->getRootValue();
@@ -45,7 +45,16 @@ for (std::string memberName : memberNames)
 ### String serialization
 
 ```cpp
+std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...;
+auto jsonDocument = jsonAdapter->buildEmptyDocument();
 
+systelab::json::IJSONValue& rootValue = jsonDocument->getRootValue();
+rootValue.addMember("att1", true);
+rootValue.addMember("att2", 123);
+rootValue.addMember("att3", "message");
+
+std::string serializedJSON = jsonDocument->serialize();
+std::cout << "Serialized JSON:" << serializedJSON << std::endl;
 ```
 
 ### JSON schema validation
