@@ -34,7 +34,7 @@ std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...
 auto jsonDocument = jsonAdapter->buildDocumentFromString(jsonToParse);
 
 systelab::json::IJSONValue& rootValue = jsonDocument->getRootValue();
-std::vector<std::string> memberNames = .getObjectMemberNames();
+std::vector<std::string> memberNames = root.getObjectMemberNames();
 for (std::string memberName : memberNames)
 {
     systelab::json::IJSONValue& memberValue = rootValue.getObjectMemberValue(memberName);
