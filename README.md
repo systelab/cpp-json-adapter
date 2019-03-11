@@ -32,16 +32,21 @@ std:string jsonToParse = "{\"att1\": true, \"att2\": 123, \"att3\":\"message\"}"
 
 std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...
 auto jsonDocument = jsonAdapter->buildDocumentFromString(jsonToParse);
-std::vector<std::string> memberNames = jsonDocument->getRootValue().getObjectMemberNames();
+
+systelab::json::IJSONValue& rootValue = jsonDocument->getRootValue();
+std::vector<std::string> memberNames = .getObjectMemberNames();
 for (std::string memberName : memberNames)
 {
-    std::cout << "Member name:" << memberName << std::endl;
+    systelab::json::IJSONValue& memberValue = rootValue.getObjectMemberValue(memberName);
+    std::cout << "Member name:" << memberName << " Type:" << (int) memberValue.getType() << std::endl;
 }
 ```
 
 ### String serialization
 
-`Add code snipped here`
+```cpp
+
+```
 
 ### JSON schema validation
 
