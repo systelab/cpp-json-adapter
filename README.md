@@ -31,7 +31,7 @@ std:string jsonToParse = "{\"att1\": true, \"att2\": 123, \"att3\":\"message\"}"
 std::unique_ptr<systelab::json::IJSONDocument> jsonDocument = jsonAdapter->buildDocumentFromString(jsonToParse);
 ```
 
-And then navigatep through the values of the created document:
+And then navigate through the values of the created document:
 
 ```cpp
 systelab::json::IJSONValue& rootValue = jsonDocument->getRootValue();
@@ -99,6 +99,6 @@ std::string reason;
 bool valid = jsonSchemaValidator->validate(*jsonDocument, reason);
 if (!valid)
 {
-  std::cout << "JSON document does not satisfy schema: " << reason << std::endl;
+    std::cout << "JSON document does not satisfy schema: " << reason << std::endl;
 }
 ```
