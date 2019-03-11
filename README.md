@@ -85,7 +85,7 @@ std::string jsonSchema = "{"
                          "}";
 
 std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...;
-std::unique_ptr<systelab::json::IJSONDocument> jsonSchemaDocument = jsonAdapter->buildDocumentFromString(jsonSchema);
+auto jsonSchemaDocument = jsonAdapter->buildDocumentFromString(jsonSchema);
 auto jsonSchemaValidator = jsonAdapter->buildSchemaValidator(jsonSchemaDocument);
 ```
 
