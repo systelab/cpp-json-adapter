@@ -23,16 +23,17 @@ Use of adapter features begins with an instance of `systelab::json::IJSONAdapter
 
 ### JSON parsing
 
+Build a document from a given string:
+
 ```cpp
-#include "JSONAdapterInterface/IJSONAdapter.h"
-#include "JSONAdapterInterface/IJSONDocument.h"
-#include "JSONAdapterInterface/IJSONValue.h"
-
-std:string jsonToParse = "{\"att1\": true, \"att2\": 123, \"att3\":\"message\"}";
-
 std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...;
-auto jsonDocument = jsonAdapter->buildDocumentFromString(jsonToParse);
+std:string jsonToParse = "{\"att1\": true, \"att2\": 123, \"att3\":\"message\"}";
+std::unique_ptr<systelab::json::IJSONDocument> jsonDocument = jsonAdapter->buildDocumentFromString(jsonToParse);
+```
 
+And then navigatep through the values of the created document:
+
+```cpp
 systelab::json::IJSONValue& rootValue = jsonDocument->getRootValue();
 std::vector<std::string> memberNames = root.getObjectMemberNames();
 for (std::string memberName : memberNames)
@@ -44,19 +45,60 @@ for (std::string memberName : memberNames)
 
 ### String serialization
 
+Build an empty JSON document:
+
 ```cpp
 std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...;
-auto jsonDocument = jsonAdapter->buildEmptyDocument();
+std::unique_ptr<systelab::json::IJSONDocument> jsonDocument = jsonAdapter->buildEmptyDocument();
+```
 
-systelab::json::IJSONValue& rootValue = jsonDocument->getRootValue();
-rootValue.addMember("att1", true);
-rootValue.addMember("att2", 123);
-rootValue.addMember("att3", "message");
+Add some members to it:
 
+```cpp
+systelab::json::IJSONValue& jsonRootValue = jsonDocument->getRootValue();
+jsonRootValue.setType(systelab::json_adapter::OBJECT_TYPE);
+jsonRootValue.addMember("att1", true);
+jsonRootValue.addMember("att2", 123);
+jsonRootValue.addMember("att3", "message");
+```
+
+Serialize the document into a string:
+
+```cpp
 std::string serializedJSON = jsonDocument->serialize();
 std::cout << "Serialized JSON:" << serializedJSON << std::endl;
 ```
 
 ### JSON schema validation
 
-`Add code snipped here`
+Build a JSON schema validator from a JSON document with a schema:
+
+```cpp
+std::string jsonSchema = "{"
+                         "    \"type\": \"object\","
+                         "    \"properties\":"
+                         "    {"
+                         "        \"id\": { \"type\": \"number\" },"
+                         "        \"name\": { \"type\": \"string\" }"
+                         "    },"
+                         "    \"required\": [\"id\"]"
+                         "}";
+
+std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...;
+std::unique_ptr<systelab::json::IJSONDocument> jsonSchemaDocument = jsonAdapter->buildDocumentFromString(jsonSchema);
+auto jsonSchemaValidator = jsonAdapter->buildSchemaValidator(jsonSchemaDocument);
+```
+
+Use it to validate another JSON document:
+
+```cpp
+std::string jsonToValidate = "{ \"id\": 123 }";
+auto jsonDocument = jsonAdapter->buildDocumentFromString(jsonToValidate);
+
+std::string reason;
+bool valid = jsonSchemaValidator->validate(*jsonDocument, reason);
+if (!valid)
+{
+  std::cout << "JSON document does not satisfy schema: " << reason << std::endl;
+}
+```
