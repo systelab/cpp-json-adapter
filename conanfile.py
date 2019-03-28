@@ -7,7 +7,7 @@ class JSONAdapterConan(ConanFile):
     url = "https://github.com/systelab/cpp-json-adapter"
     homepage = "https://github.com/systelab/cpp-json-adapter"
     author = "CSW <csw@werfen.com>"
-    topics = ("conan", "json", "adapter", "wrapper")	
+    topics = ("conan", "json", "adapter", "wrapper")
     license = "MIT"
     generators = "cmake"
     settings = "os", "compiler", "build_type", "arch"
