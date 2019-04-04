@@ -25,7 +25,7 @@ install:
 before_build:
   - md build
   - cd build
-  - conan install ..
+  - conan install .. -s build_type=%CONFIGURATION%
   - cmake .. -G "Visual Studio 15 2017 Win64"
 
 build:
@@ -35,13 +35,13 @@ after_build:
   - conan export-pkg ../conanfile.py JSONAdapter/%APPVEYOR_BUILD_VERSION%@systelab/stable -s build_type=%CONFIGURATION%
 
 artifacts:
-  - path: 'build/JSONAdapterTestUtilities/$(configuration)/JSONAdapterTestUtilities.lib'
+  - path: 'build/lib/JSONAdapterTestUtilities.lib'
     name: JSONAdapterTestUtilities.lib
 
 deploy_script:
   - ps: >- 
       if($env:appveyor_repo_tag -eq 'True') {
-        conan upload JSONAdapter/$env:appveyor_build_version@systelab/stable --all -r systelab-bintray
+        conan upload JSONAdapter/$env:appveyor_build_version@systelab/stable --all -r systelab-bintray --force
       } else {
         echo "Not uploading because this is not a tag build"
       }
