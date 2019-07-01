@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 
+# Find external dependencides
+find_package(TestUtilitiesInterface)
+
 # Add project folder into includes
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -8,8 +11,7 @@ set(JSON_ADAPTER_TEST_UTILITIES_PROJECT JSONAdapterTestUtilities)
 file(GLOB_RECURSE JSON_ADAPTER_TEST_UTILITIES_PROJECT_SRC "*.cpp")
 file(GLOB_RECURSE JSON_ADAPTER_TEST_UTILITIES_PROJECT_HDR "*.h")
 add_library(${JSON_ADAPTER_TEST_UTILITIES_PROJECT} STATIC ${JSON_ADAPTER_TEST_UTILITIES_PROJECT_SRC} ${JSON_ADAPTER_TEST_UTILITIES_PROJECT_HDR})
-target_link_libraries(${JSON_ADAPTER_TEST_UTILITIES_PROJECT} gmock_main)
-
+target_link_libraries(${JSON_ADAPTER_TEST_UTILITIES_PROJECT} TestUtilitiesInterface::TestUtilitiesInterface gmock_main)
 
 # Configure source groups
 foreach(FILE ${JSON_ADAPTER_TEST_UTILITIES_PROJECT_SRC} ${JSON_ADAPTER_TEST_UTILITIES_PROJECT_HDR})
