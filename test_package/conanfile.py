@@ -18,4 +18,5 @@ class JSONAdapterTestConan(ConanFile):
     def test(self):
         if not tools.cross_building(self.settings):
             os.chdir("bin")
+            os.chdir("%s" % (self.settings.build_type))
             self.run(".%sJSONAdapterPackageTest" % os.sep)
