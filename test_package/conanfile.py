@@ -16,7 +16,5 @@ class JSONAdapterTestConan(ConanFile):
         self.copy('*.so*', dst='bin', src='lib')
 
     def test(self):
-        if not tools.cross_building(self.settings):
-            os.chdir("bin")
-            os.chdir("%s" % (self.settings.build_type))
-            self.run(".%sJSONAdapterPackageTest" % os.sep)
+        cmake = CMake(self)
+        cmake.test()

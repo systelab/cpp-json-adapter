@@ -21,3 +21,7 @@ find_package(JSONAdapter)
 set(JSON_ADAPTER_PACKAGE_TEST_PROJECT JSONAdapterPackageTest)
 add_executable(${JSON_ADAPTER_PACKAGE_TEST_PROJECT} JSONAdapterExample.cpp)
 target_link_libraries(${JSON_ADAPTER_PACKAGE_TEST_PROJECT} JSONAdapter::JSONAdapter gmock_main)
+
+# Register tests
+enable_testing()
+add_test(NAME JSONAdapterPackageTest COMMAND ${JSON_ADAPTER_PACKAGE_TEST_PROJECT})
