@@ -13,6 +13,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     def requirements(self):
+        self.requires("JSONAdapterInterface/1.0.3@systelab/stable")
         self.requires("TestUtilitiesInterface/1.0.3@systelab/stable")
         self.requires("gtest/1.7.0@bincrafters/stable")
 
