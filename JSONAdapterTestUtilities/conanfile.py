@@ -1,5 +1,5 @@
+import os
 from conans import ConanFile, tools
-from conans.model.version import Version
 
 
 class JSONAdapterTestUtilitiesConan(ConanFile):
