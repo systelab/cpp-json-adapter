@@ -29,18 +29,17 @@ install:
 
 before_build:
   - conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/%APPVEYOR_BUILD_VERSION%@systelab/stable -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH%
-  - cd JSONAdapterTestUtilities
   - md build
   - cd build
-  - conan install .. -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH% -e VERSION="%APPVEYOR_BUILD_VERSION%"
+  - conan install ../JSONAdapterTestUtilities -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH% -e VERSION="%APPVEYOR_BUILD_VERSION%"
   - cmake .. -G "Visual Studio 15 2017"
 
 build:
   project: $(APPVEYOR_BUILD_FOLDER)\JSONAdapterTestUtilities\build\JSONAdapter.sln
 
 after_build:
-  - conan export-pkg ../conanfile.py JSONAdapterTestUtilities/%APPVEYOR_BUILD_VERSION%@systelab/stable -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH%
-  - conan test ../test_package/conanfile.py JSONAdapterTestUtilities/%APPVEYOR_BUILD_VERSION%@systelab/stable -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH%
+  - conan export-pkg ../JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/%APPVEYOR_BUILD_VERSION%@systelab/stable -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH%
+  - conan test ../JSONAdapterTestUtilities/test_package/conanfile.py JSONAdapterTestUtilities/%APPVEYOR_BUILD_VERSION%@systelab/stable -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH%
 
 artifacts:
   - path: 'build/lib/%CONFIGURATION%/JSONAdapterTestUtilities.lib'
