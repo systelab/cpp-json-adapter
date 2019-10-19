@@ -1,4 +1,4 @@
-from conans import ConanFile, tools
+from conans import ConanFile
 
 
 class JSONAdapterInterfaceConan(ConanFile):
