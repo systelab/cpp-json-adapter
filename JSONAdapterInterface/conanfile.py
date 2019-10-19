@@ -13,10 +13,7 @@ class JSONAdapterInterfaceConan(ConanFile):
     # No settings/options are necessary, this is header only
 
     def package(self):
-        self.copy("*.h", dst="include/JSONAdapterInterface", src="JSONAdapterInterface")
-        self.copy("*.h", dst="include/JSONAdapterTestUtilities", src="JSONAdapterTestUtilities")
-        self.copy("*JSONAdapterTestUtilities.lib", dst="lib", keep_path=False)
-        self.copy("*JSONAdapterTestUtilities.a", dst="lib", keep_path=False)
+        self.copy("*.h", dst="include/JSONAdapterInterface")
 
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
+        self.info.header_only()

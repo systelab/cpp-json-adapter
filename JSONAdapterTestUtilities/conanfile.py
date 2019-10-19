@@ -13,12 +13,11 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     def requirements(self):
-        self.requires("TestUtilitiesInterface/1.0.1@systelab/stable")
+        self.requires("TestUtilitiesInterface/1.0.3@systelab/stable")
         self.requires("gtest/1.7.0@bincrafters/stable")
 
     def package(self):
-        self.copy("*.h", dst="include/JSONAdapterInterface", src="JSONAdapterInterface")
-        self.copy("*.h", dst="include/JSONAdapterTestUtilities", src="JSONAdapterTestUtilities")
+        self.copy("*.h", dst="include/JSONAdapterTestUtilities", keep_path=False)
         self.copy("*JSONAdapterTestUtilities.lib", dst="lib", keep_path=False)
         self.copy("*JSONAdapterTestUtilities.a", dst="lib", keep_path=False)
 
