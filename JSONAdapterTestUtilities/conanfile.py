@@ -1,4 +1,5 @@
 from conans import ConanFile, tools
+from conans.model.version import Version
 
 
 class JSONAdapterTestUtilitiesConan(ConanFile):
@@ -12,10 +13,10 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     generators = "cmake_find_package"
     settings = "os", "compiler", "build_type", "arch"
 
-    def requirements(self):		
+    def requirements(self):
         self.requires("gtest/1.7.0@bincrafters/stable")
         self.requires("TestUtilitiesInterface/1.0.3@systelab/stable")
-        if self.version == "None":
+        if self.version == Version("None"):
             self.requires("JSONAdapterInterface/%s@systelab/stable" % os.environ['VERSION'])
         else:
             self.requires("JSONAdapterInterface/%s@systelab/stable" % self.version)
