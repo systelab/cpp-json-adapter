@@ -32,7 +32,7 @@ before_build:
   - cd JSONAdapterTestUtilities
   - md build
   - cd build
-  - conan install .. -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH%
+  - conan install .. -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH% -e VERSION="%APPVEYOR_BUILD_VERSION%"
   - cmake .. -G "Visual Studio 15 2017"
 
 build:
