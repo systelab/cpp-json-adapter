@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TestUtilitiesInterface/EntityComparator.h"
+#include "TestUtilitiesInterface/EntityComparatorMacros.h"
 
 #include "JSONAdapterInterface/IJSONDocument.h"
 #include "JSONAdapterInterface/IJSONValue.h"
