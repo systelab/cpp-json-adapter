@@ -51,28 +51,41 @@ install:
 
 script:
   - g++ --version
+  - |
+    if [ -n "$TRAVIS_TAG" ]; then
+      conan export-pkg JSONAdapterInterface/conanfile.py "JSONAdapterInterface/${TRAVIS_TAG:1}@systelab/stable" -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
+    else
+      conan export-pkg JSONAdapterInterface/conanfile.py "JSONAdapterInterface/0.0.${TRAVIS_BUILD_NUMBER}@systelab/stable" -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
+    fi
   - mkdir -p build
   - cd build
-  - conan install .. -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX}
+  - |
+    if [ -n "$TRAVIS_TAG" ]; then
+      conan install ../JSONAdapterTestUtilities -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX} -e VERSION="${TRAVIS_TAG:1}";
+    else
+      conan install ../JSONAdapterTestUtilities -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX} -e VERSION="0.0.${TRAVIS_BUILD_NUMBER}";
+    fi
   - cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
   - make
   - |
     if [ -n "$TRAVIS_TAG" ]; then
-      conan export-pkg ../conanfile.py "JSONAdapter/${TRAVIS_TAG:1}@systelab/stable" -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
+      conan export-pkg ../JSONAdapterTestUtilities/conanfile.py "JSONAdapterTestUtilities/${TRAVIS_TAG:1}@systelab/stable" -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
     else
-      conan export-pkg ../conanfile.py "JSONAdapter/0.0.${TRAVIS_BUILD_NUMBER}@systelab/stable" -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
+      conan export-pkg ../JSONAdapterTestUtilities/conanfile.py "JSONAdapterTestUtilities/0.0.${TRAVIS_BUILD_NUMBER}@systelab/stable" -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
     fi
   - |
     if [ "$BUILD_TYPE" == "Release" ] || [ "$BUILD_TYPE" == "Debug" ]; then
       if [ -n "$TRAVIS_TAG" ]; then
-        conan test ../test_package/conanfile.py JSONAdapter/${TRAVIS_TAG:1}@systelab/stable -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
+        conan test ../test_package/conanfile.py JSONAdapterTestUtilities/${TRAVIS_TAG:1}@systelab/stable -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
       else
-        conan test ../test_package/conanfile.py JSONAdapter/0.0.${TRAVIS_BUILD_NUMBER}@systelab/stable -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
+        conan test ../test_package/conanfile.py JSONAdapterTestUtilities/0.0.${TRAVIS_BUILD_NUMBER}@systelab/stable -s build_type=${CONAN_BUILD_TYPE} -s compiler.libcxx=${COMPILER_LIBCXX};
       fi
     fi
 
 deploy:
   provider: script
-  script: conan upload "JSONAdapter/${TRAVIS_TAG:1}@systelab/stable" --all -r systelab-bintray --force
+  script:
+    - conan upload JSONAdapterInterface/${TRAVIS_TAG:1}@systelab/stable --all -r systelab-bintray --force
+    - conan upload "JSONAdapterTestUtilities/${TRAVIS_TAG:1}@systelab/stable" --all -r systelab-bintray --force
   on:
     tags: true
