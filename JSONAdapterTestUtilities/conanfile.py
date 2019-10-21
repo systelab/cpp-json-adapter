@@ -28,7 +28,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
             self.requires("JSONAdapterInterface/%s@systelab/stable" % self.version)
 
     def package(self):
-        self.copy("*.h", dst="include/JSONAdapterTestUtilities", keep_path=False)
+        self.copy("*.h", dst="include/JSONAdapterTestUtilities", keep_path=True)
         self.copy("*JSONAdapterTestUtilities.lib", dst="lib", keep_path=False)
         self.copy("*JSONAdapterTestUtilities.a", dst="lib", keep_path=False)
 
