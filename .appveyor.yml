@@ -18,7 +18,7 @@ environment:
     platform: Win32
     gtest: 1.7.0
 
-  - arch: x64
+  - arch: x86_64
     platform: x64
     gtest: 1.8.1
 
