@@ -16,10 +16,12 @@ environment:
   matrix:
   - arch: x86
     platform: Win32
+    visual_studio: Visual Studio 15 2017
     gtest: 1.7.0
 
   - arch: x86_64
     platform: x64
+    visual_studio: Visual Studio 15 2017 Win64
     gtest: 1.8.1
 
 install:
@@ -34,7 +36,7 @@ before_build:
   - md build
   - cd build
   - conan install ../JSONAdapterTestUtilities -s build_type=%CONFIGURATION% -s compiler.toolset=v141 -s arch=%ARCH% -e VERSION="%APPVEYOR_BUILD_VERSION%" -o gtest=%GTEST%
-  - cmake .. -G "Visual Studio 15 2017"
+  - cmake .. -G "%VISUAL_STUDIO%"
 
 build:
   project: $(APPVEYOR_BUILD_FOLDER)\build\JSONAdapter.sln
