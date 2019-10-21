@@ -10,17 +10,13 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# Setup up Google test
-include(ConfigureGoogleTest)
-configure_google_test()
-
 # Find external dependencies
-find_package(JSONAdapter)
+find_package(JSONAdapterTestUtilities)
 
 # Configure test package project
 set(JSON_ADAPTER_PACKAGE_TEST_PROJECT JSONAdapterPackageTest)
 add_executable(${JSON_ADAPTER_PACKAGE_TEST_PROJECT} JSONAdapterExample.cpp)
-target_link_libraries(${JSON_ADAPTER_PACKAGE_TEST_PROJECT} JSONAdapter::JSONAdapter gmock_main)
+target_link_libraries(${JSON_ADAPTER_PACKAGE_TEST_PROJECT} JSONAdapterTestUtilities::JSONAdapterTestUtilities)
 
 # Register tests
 enable_testing()
