@@ -17,7 +17,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
 
     def requirements(self):
         if self.options.gtest == "1.7.0":
-            self.requires("gtest/1.7.0@bincrafters/stable")
+            self.requires("gtest/1.7.0@systelab/stable")
         else:
             self.requires("gtest/1.8.1@bincrafters/stable")
 
