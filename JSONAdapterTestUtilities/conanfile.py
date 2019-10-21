@@ -12,9 +12,15 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     license = "MIT"
     generators = "cmake_find_package"
     settings = "os", "compiler", "build_type", "arch"
+    options = {"gtest": ["1.7.0", "1.8.1"]}
+    default_options = "gtest=1.8.1"
 
     def requirements(self):
-        self.requires("gtest/1.7.0@systelab/stable")
+        if self.options.gtest == "1.7.0":
+            self.requires("gtest/1.7.0@systelab/stable")
+        else:
+            self.requires("gtest/1.8.1@bincrafters/stable")
+
         self.requires("TestUtilitiesInterface/1.0.3@systelab/stable")
         if ("%s" % self.version) == "None":
             self.requires("JSONAdapterInterface/%s@systelab/stable" % os.environ['VERSION'])
