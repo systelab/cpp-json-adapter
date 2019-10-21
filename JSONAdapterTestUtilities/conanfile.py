@@ -15,9 +15,6 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     options = {"gtest": ["1.7.0", "1.8.1"]}
     default_options = "gtest=1.8.1"
 
-    def configure(self):
-        self.options["gtest"].shared = False
-
     def requirements(self):
         if self.options.gtest == "1.7.0":
             self.requires("gtest/1.7.0@systelab/stable")
