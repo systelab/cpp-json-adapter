@@ -87,6 +87,6 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ./deploy.sh -v "${TRAVIS_TAG:1}"
+  script: bash ./deploy.sh -v "${TRAVIS_TAG:1}"
   on:
     tags: true
