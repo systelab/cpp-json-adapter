@@ -84,6 +84,7 @@ script:
 
 deploy:
   provider: script
+  skip_cleanup: true
   script: >
     conan upload JSONAdapterInterface/${TRAVIS_TAG:1}@systelab/stable --all -r systelab-bintray --force &&
     conan upload "JSONAdapterTestUtilities/${TRAVIS_TAG:1}@systelab/stable" --all -r systelab-bintray --force
