@@ -45,6 +45,10 @@ namespace systelab { namespace json {
 		virtual void setLongLong(long long) = 0;
 		virtual void setDouble(double) = 0;
 
+		// Only for Null values
+		virtual bool isNull() const = 0;
+		virtual void setNull() = 0;
+
 		// Only for object values
 		virtual unsigned int getObjectMemberCount() const = 0;
 		virtual bool hasObjectMember(const std::string&) const = 0;
