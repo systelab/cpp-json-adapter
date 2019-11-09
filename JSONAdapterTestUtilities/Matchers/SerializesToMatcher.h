@@ -6,7 +6,7 @@
 
 namespace systelab { namespace json { namespace test_utility {
 
-	MATCHER_P(serializesTo, expectedJSON, jsonAdapter, "JSONAdapterComparison") \
+	MATCHER_P2(serializesTo, expectedJSON, jsonAdapter, "JSONAdapterComparison") \
 	{ \
 		AssertionResult rc = compareJSONs(expectedJSON, arg, jsonAdapter); \
 		*result_listener << rc.message(); \
