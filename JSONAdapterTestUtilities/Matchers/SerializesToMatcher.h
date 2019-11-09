@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JSONAdapterUtilities.h"
+#include "../JSONAdapterUtilities.h"
 #include "TestUtilitiesInterface/EntityComparator.h"
 
 
