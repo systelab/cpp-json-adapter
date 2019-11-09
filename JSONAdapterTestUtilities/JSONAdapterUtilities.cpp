@@ -8,7 +8,7 @@ namespace systelab { namespace json { namespace test_utility {
 
 	testing::AssertionResult compareJSONs(const std::string& expected,
 										  const std::string& toTest,
-										  IJSONAdapter& jsonAdapter)
+										  const IJSONAdapter& jsonAdapter)
 	{
 		
 		auto expectedDocument = jsonAdapter.buildDocumentFromString(expected);
@@ -28,7 +28,7 @@ namespace systelab { namespace json { namespace test_utility {
 
 	testing::AssertionResult compareJSONs(const std::string& expected,
 										  const IJSONDocument& toTestDocument,
-										  IJSONAdapter& jsonAdapter)
+										  const IJSONAdapter& jsonAdapter)
 	{
 		auto expectedDocument = jsonAdapter.buildDocumentFromString(expected);
 		if (!expectedDocument)

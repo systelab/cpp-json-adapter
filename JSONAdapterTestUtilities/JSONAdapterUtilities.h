@@ -6,8 +6,8 @@
 
 namespace systelab { namespace json { namespace test_utility {
 
-	testing::AssertionResult compareJSONs(const std::string& expected, const std::string& toTest, IJSONAdapter&);
-	testing::AssertionResult compareJSONs(const std::string& expected, const IJSONDocument& toTest, IJSONAdapter&);
+	testing::AssertionResult compareJSONs(const std::string& expected, const std::string& toTest, const IJSONAdapter&);
+	testing::AssertionResult compareJSONs(const std::string& expected, const IJSONDocument& toTest, const IJSONAdapter&);
 	testing::AssertionResult compareJSONs(const IJSONDocument& expected, const IJSONDocument& toTest);
 
 }}}
