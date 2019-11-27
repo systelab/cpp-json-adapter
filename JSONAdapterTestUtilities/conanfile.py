@@ -1,5 +1,5 @@
 import os
-from conans import ConanFile, tools
+from conans import ConanFile, tools, CMake
 
 
 class JSONAdapterTestUtilitiesConan(ConanFile):
@@ -14,6 +14,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"gtest": ["1.7.0", "1.8.1"]}
     default_options = "gtest=1.8.1"
+    exports_sources = "*"
 
     def requirements(self):
         if self.options.gtest == "1.7.0":
@@ -26,6 +27,11 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
             self.requires("JSONAdapterInterface/%s@systelab/stable" % os.environ['VERSION'])
         else:
             self.requires("JSONAdapterInterface/%s@systelab/stable" % self.version)
+
+    def build(self):
+        cmake = CMake(self)
+        cmake.configure(source_folder=".")
+        cmake.build()
 
     def package(self):
         self.copy("*.h", dst="include/JSONAdapterTestUtilities", keep_path=True)
