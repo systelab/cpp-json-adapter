@@ -59,6 +59,10 @@ namespace systelab { namespace json { namespace test_utility {
 												const IJSONAdapter& jsonAdapter)
 	{
 		auto documentJSON = jsonAdapter.buildDocumentFromString(document);
+		if (!documentJSON)
+		{
+			return testing::AssertionFailure() << "Document is not a valid JSON";
+		}
 		return validateJSONSchema(*documentJSON, schemaDocument, jsonAdapter);
 	}
 
@@ -67,6 +71,11 @@ namespace systelab { namespace json { namespace test_utility {
 												const IJSONAdapter& jsonAdapter)
 	{
 		auto documentJSON = jsonAdapter.buildDocumentFromString(document);
+		if (!documentJSON)
+		{
+			return testing::AssertionFailure() << "Document is not a valid JSON";
+		}
+
 		return validateJSONSchema(*documentJSON, schemaDocument, jsonAdapter);
 	}
 
@@ -75,6 +84,11 @@ namespace systelab { namespace json { namespace test_utility {
 												const IJSONAdapter& jsonAdapter)
 	{
 		auto schemaDocumentJSON = jsonAdapter.buildDocumentFromString(schemaDocument);
+		if (!schemaDocumentJSON)
+		{
+			return testing::AssertionFailure() << "Schema is not a valid JSON";
+		}
+
 		return validateJSONSchema(document, *schemaDocumentJSON, jsonAdapter);
 	}
 
@@ -106,6 +120,11 @@ namespace systelab { namespace json { namespace test_utility {
 												const IJSONAdapter& jsonAdapter)
 	{
 		auto documentJSON = jsonAdapter.buildDocumentFromString(document);
+		if (!documentJSON)
+		{
+			return testing::AssertionFailure() << "Document is not a valid JSON";
+		}
+
 		return validateJSONSchema(*documentJSON, schemaDocument, remoteSchemaProvider, jsonAdapter);
 	}
 
@@ -115,6 +134,11 @@ namespace systelab { namespace json { namespace test_utility {
 												const IJSONAdapter& jsonAdapter)
 	{
 		auto documentJSON = jsonAdapter.buildDocumentFromString(document);
+		if (!documentJSON)
+		{
+			return testing::AssertionFailure() << "Document is not a valid JSON";
+		}
+
 		return validateJSONSchema(*documentJSON, schemaDocument, remoteSchemaProvider, jsonAdapter);
 	}
 
@@ -124,6 +148,11 @@ namespace systelab { namespace json { namespace test_utility {
 												const IJSONAdapter& jsonAdapter)
 	{
 		auto schemaDocumentJSON = jsonAdapter.buildDocumentFromString(schemaDocument);
+		if (!schemaDocumentJSON)
+		{
+			return testing::AssertionFailure() << "Schema is not a valid JSON";
+		}
+
 		return validateJSONSchema(document, *schemaDocumentJSON, remoteSchemaProvider, jsonAdapter);
 	}
 
@@ -137,5 +166,4 @@ namespace systelab { namespace json { namespace test_utility {
 	}
 
 }}}
-
 
