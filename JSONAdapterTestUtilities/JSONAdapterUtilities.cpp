@@ -63,6 +63,7 @@ namespace systelab { namespace json { namespace test_utility {
 		{
 			return testing::AssertionFailure() << "Document is not a valid JSON";
 		}
+
 		return validateJSONSchema(*documentJSON, schemaDocument, jsonAdapter);
 	}
 
