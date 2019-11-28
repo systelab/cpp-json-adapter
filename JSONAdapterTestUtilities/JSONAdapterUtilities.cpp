@@ -6,6 +6,7 @@
 
 namespace systelab { namespace json { namespace test_utility {
 
+	// JSON comparison
 	testing::AssertionResult compareJSONs(const std::string& expected,
 										  const std::string& toTest,
 										  const IJSONAdapter& jsonAdapter)
@@ -49,6 +50,90 @@ namespace systelab { namespace json { namespace test_utility {
 		}
 
 		return testing::AssertionSuccess();
+	}
+
+
+	// Schema validation
+	testing::AssertionResult validateJSONSchema(const std::string& document,
+												const std::string& schemaDocument,
+												const IJSONAdapter& jsonAdapter)
+	{
+		auto documentJSON = jsonAdapter.buildDocumentFromString(document);
+		return validateJSONSchema(*documentJSON, schemaDocument, jsonAdapter);
+	}
+
+	testing::AssertionResult validateJSONSchema(const std::string& document,
+												const IJSONDocument& schemaDocument,
+												const IJSONAdapter& jsonAdapter)
+	{
+		auto documentJSON = jsonAdapter.buildDocumentFromString(document);
+		return validateJSONSchema(*documentJSON, schemaDocument, jsonAdapter);
+	}
+
+	testing::AssertionResult validateJSONSchema(const IJSONDocument& document,
+												const std::string& schemaDocument,
+												const IJSONAdapter& jsonAdapter)
+	{
+		auto schemaDocumentJSON = jsonAdapter.buildDocumentFromString(schemaDocument);
+		return validateJSONSchema(document, *schemaDocumentJSON, jsonAdapter);
+	}
+
+	testing::AssertionResult validateJSONSchema(const IJSONDocument& document,
+												const IJSONDocument& schemaDocument,
+												const IJSONAdapter& jsonAdapter)
+	{
+		auto schemaValidator = jsonAdapter.buildSchemaValidator(schemaDocument);
+		return validateJSONSchema(document, *schemaValidator);
+	}
+
+	testing::AssertionResult validateJSONSchema(const IJSONDocument& document,
+												const IJSONSchemaValidator& schemaValidator)
+	{
+		std::string reason;
+		if (!schemaValidator.validate(document, reason))
+		{
+			return testing::AssertionFailure() << reason;
+		}
+
+		return testing::AssertionSuccess();
+	}
+
+
+	// Remote schema validation
+	testing::AssertionResult validateJSONSchema(const std::string& document,
+												const std::string& schemaDocument,
+												const IJSONRemoteSchemaProvider& remoteSchemaProvider,
+												const IJSONAdapter& jsonAdapter)
+	{
+		auto documentJSON = jsonAdapter.buildDocumentFromString(document);
+		return validateJSONSchema(*documentJSON, schemaDocument, remoteSchemaProvider, jsonAdapter);
+	}
+
+	testing::AssertionResult validateJSONSchema(const std::string& document,
+												const IJSONDocument& schemaDocument,
+												const IJSONRemoteSchemaProvider& remoteSchemaProvider,
+												const IJSONAdapter& jsonAdapter)
+	{
+		auto documentJSON = jsonAdapter.buildDocumentFromString(document);
+		return validateJSONSchema(*documentJSON, schemaDocument, remoteSchemaProvider, jsonAdapter);
+	}
+
+	testing::AssertionResult validateJSONSchema(const IJSONDocument& document,
+												const std::string& schemaDocument,
+												const IJSONRemoteSchemaProvider& remoteSchemaProvider,
+												const IJSONAdapter& jsonAdapter)
+	{
+		auto schemaDocumentJSON = jsonAdapter.buildDocumentFromString(schemaDocument);
+		return validateJSONSchema(document, *schemaDocumentJSON, remoteSchemaProvider, jsonAdapter);
+	}
+
+	testing::AssertionResult validateJSONSchema(const IJSONDocument& document,
+												const IJSONDocument& schemaDocument,
+												const IJSONRemoteSchemaProvider& remoteSchemaProvider,
+												const IJSONAdapter& jsonAdapter)
+	{
+		auto schemaValidator = jsonAdapter.buildSchemaValidator(schemaDocument, remoteSchemaProvider);
+		return validateJSONSchema(document, *schemaValidator);
 	}
 
 }}}
