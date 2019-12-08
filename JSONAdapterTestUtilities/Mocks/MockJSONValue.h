@@ -29,6 +29,9 @@ namespace systelab { namespace json { namespace test_utility {
 		MOCK_METHOD1(setLongLong, void(long long));
 		MOCK_METHOD1(setDouble, void(double));
 
+		MOCK_CONST_METHOD0(isNull, bool());
+		MOCK_METHOD0(setNull, void());
+
 		MOCK_CONST_METHOD0(getObjectMemberCount, unsigned int());
 		MOCK_CONST_METHOD1(hasObjectMember, bool(const std::string&));
 		MOCK_CONST_METHOD0(getObjectMemberNames, std::vector<std::string>());

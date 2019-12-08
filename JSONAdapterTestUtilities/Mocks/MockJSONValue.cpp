@@ -4,12 +4,7 @@
 
 namespace systelab { namespace json { namespace test_utility {
 
-	MockJSONValue::MockJSONValue()
-	{
-	}
-
-	MockJSONValue::~MockJSONValue()
-	{
-	}
+	MockJSONValue::MockJSONValue() = default;
+	MockJSONValue::~MockJSONValue() = default;
 
 }}}
