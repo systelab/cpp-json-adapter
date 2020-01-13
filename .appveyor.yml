@@ -22,7 +22,7 @@ environment:
   - arch: x86_64
     platform: x64
     visual_studio: Visual Studio 15 2017 Win64
-    gtest: 1.8.1
+    gtest: 1.10.0
 
 install:
   - set PATH=%PATH%;%PYTHON%/Scripts/
