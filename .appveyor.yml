@@ -11,9 +11,11 @@ configuration:
   - Release
 
 environment:
-  matrix:
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  global:
     PYTHON: "C:\\Python36"
+
+  matrix:
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017    
     arch: x86
     platform: Win32
     visual_studio: Visual Studio 15 2017
@@ -21,7 +23,6 @@ environment:
     gtest: 1.7.0
 
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-    PYTHON: "C:\\Python36"
     arch: x86_64
     platform: x64
     visual_studio: Visual Studio 16 2019
@@ -29,7 +30,7 @@ environment:
     gtest: 1.10.0
 
 install:
-  - set PATH=%PATH%;%PYTHON%/Scripts/
+  - set PATH=%PATH%;%PYTHON%;%PYTHON%/Scripts/
   - pip.exe install conan
   - conan user
   - conan remote add systelab-bintray https://api.bintray.com/conan/systelab/conan
