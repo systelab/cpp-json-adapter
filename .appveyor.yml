@@ -30,7 +30,7 @@ environment:
     gtest: 1.10.0
 
 install:
-  - set PATH=%PATH%;%PYTHON%;%PYTHON%/Scripts/
+  - "SET PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%"
   - pip.exe install conan
   - conan user
   - conan remote add systelab-bintray https://api.bintray.com/conan/systelab/conan
