@@ -4,7 +4,9 @@ matrix:
   include:
   - os: linux
     dist: xenial
+    language: python
     compiler: gcc
+    python: "3.7"
     addons:
       apt:
         sources:
@@ -20,7 +22,9 @@ matrix:
 
   - os: linux
     dist: xenial
+    language: python
     compiler: gcc
+    python: "3.7"
     addons:
       apt:
         sources:
@@ -36,6 +40,7 @@ matrix:
 
   - os: osx
     osx_image: xcode10.1
+    language: cpp
     compiler: clang   
     env:
       - BUILD_TYPE=Release
@@ -46,7 +51,7 @@ matrix:
 install: 
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 90; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90; fi
-  - if [ $TRAVIS_OS_NAME == linux ]; then pip install conan --user; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then pip install conan; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew install conan; fi
   - conan user
   - conan remote add systelab-bintray https://api.bintray.com/conan/systelab/conan
