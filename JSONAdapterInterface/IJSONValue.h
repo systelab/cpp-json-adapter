@@ -17,6 +17,7 @@ namespace systelab { namespace json {
 		NUMBER_TYPE = 5
 	};
 
+	class IJSONDocument;
 	class IJSONMember;
 
 	class IJSONValue
@@ -72,8 +73,9 @@ namespace systelab { namespace json {
 		virtual void addArrayValue(std::unique_ptr<IJSONValue>) = 0;
 		virtual void clearArray() = 0;
 
-		// Factory of values
+		// Factory methods
 		virtual std::unique_ptr<IJSONValue> buildValue(Type) const = 0;
+		virtual std::unique_ptr<IJSONDocument> buildDocument() const = 0;
 	};
 
 }}

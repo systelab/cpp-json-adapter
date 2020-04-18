@@ -69,6 +69,12 @@ namespace systelab { namespace json { namespace test_utility {
 		{
 			return std::unique_ptr<IJSONValue>(buildValueProxy(type));
 		}
+
+		MOCK_CONST_METHOD0(buildDocumentProxy, IJSONDocument*());
+		std::unique_ptr<IJSONDocument> buildDocument() const
+		{
+			return std::unique_ptr<IJSONDocument>(buildDocumentProxy());
+		}
 	};
 
 }}}
