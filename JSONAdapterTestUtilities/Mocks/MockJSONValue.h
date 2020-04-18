@@ -1,5 +1,6 @@
 #pragma once
 
+#include "JSONAdapterInterface/IJSONDocument.h"
 #include "JSONAdapterInterface/IJSONValue.h"
 
 
