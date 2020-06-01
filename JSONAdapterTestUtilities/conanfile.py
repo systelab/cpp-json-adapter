@@ -22,9 +22,9 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
         elif self.options.gtest == "1.8.1":
             self.requires("gtest/1.8.1@bincrafters/stable")
         else:
-            self.requires("gtest/1.10.0@systelab/stable")
+            self.requires("gtest/1.10.0")
 
-        self.requires("TestUtilitiesInterface/1.0.3@systelab/stable")
+        self.requires("TestUtilitiesInterface/1.0.4@systelab/stable")
         if ("%s" % self.version) == "None":
             self.requires("JSONAdapterInterface/%s@systelab/stable" % os.environ['VERSION'])
         else:
