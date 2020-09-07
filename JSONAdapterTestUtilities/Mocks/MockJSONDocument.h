@@ -15,7 +15,7 @@ namespace systelab { namespace json { namespace test_utility {
 		MOCK_METHOD0(getRootValue, IJSONValue&());
 		MOCK_CONST_METHOD0(getRootValue, IJSONValue&());
 
-		MOCK_CONST_METHOD0(serialize, std::string());
+		MOCK_CONST_METHOD1(serialize, std::string(bool));
 	};
 
 }}}

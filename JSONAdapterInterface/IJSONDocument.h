@@ -15,7 +15,7 @@ namespace systelab { namespace json {
 		virtual IJSONValue& getRootValue() = 0;
 		virtual const IJSONValue& getRootValue() const = 0;
 
-		virtual std::string serialize() const = 0;
+		virtual std::string serialize(bool pretty = false) const = 0;
 	};
 
 }}
