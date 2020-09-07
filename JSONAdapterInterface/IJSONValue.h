@@ -73,6 +73,10 @@ namespace systelab { namespace json {
 		virtual void addArrayValue(std::unique_ptr<IJSONValue>) = 0;
 		virtual void clearArray() = 0;
 
+		// JSON pointer
+		virtual IJSONValue* getJSONPointerValue(const std::string& jsonPointer) = 0;
+		virtual const IJSONValue* getJSONPointerValue(const std::string& jsonPointer) const = 0;
+
 		// Factory methods
 		virtual std::unique_ptr<IJSONValue> buildValue(Type) const = 0;
 		virtual std::unique_ptr<IJSONDocument> buildDocument() const = 0;

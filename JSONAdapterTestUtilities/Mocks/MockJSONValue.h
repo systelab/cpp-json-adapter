@@ -65,6 +65,9 @@ namespace systelab { namespace json { namespace test_utility {
 
 		MOCK_METHOD0(clearArray, void());
 
+		MOCK_METHOD1(getJSONPointerValue, IJSONValue*(const std::string&));
+		MOCK_CONST_METHOD1(getJSONPointerValue, const IJSONValue*(const std::string&));
+
 		MOCK_CONST_METHOD1(buildValueProxy, IJSONValue*(Type));
 		std::unique_ptr<IJSONValue> buildValue(Type type) const
 		{
