@@ -31,7 +31,8 @@ Build a document from a given string:
 ```cpp
 std::unique_ptr<systelab::json::IJSONAdapter> jsonAdapter = ...;
 std:string jsonToParse = "{\"att1\": true, \"att2\": 123, \"att3\":\"message\"}";
-std::unique_ptr<systelab::json::IJSONDocument> jsonDocument = jsonAdapter->buildDocumentFromString(jsonToParse);
+std::unique_ptr<systelab::json::IJSONDocument> jsonDocument =
+    jsonAdapter->buildDocumentFromString(jsonToParse);
 ```
 
 And then navigate through the values of the created document:
@@ -84,9 +85,9 @@ A value inside a JSON document can be found using the `getJSONPointerValue()` me
 ```
 
 ```cpp
-auto jsonValue1 = jsonRootValue.getJSONPointerValue("/foo/1"); // "baz"
-auto jsonValue2 = jsonRootValue.getJSONPointerValue("/pi"); // 3.1416
-auto jsonValue3 = jsonRootValue.getJSONPointerValue("/not/found"); // null
+auto jsonValue1 = jsonRootValue.getJSONPointerValue("foo/1"); // "baz"
+auto jsonValue2 = jsonRootValue.getJSONPointerValue("pi"); // 3.1416
+auto jsonValue3 = jsonRootValue.getJSONPointerValue("not/found"); // null
 ```
 
 ### JSON schema validation
