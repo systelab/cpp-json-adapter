@@ -74,7 +74,7 @@ std::cout << "Serialized JSON:" << serializedJSON << std::endl;
 
 ### JSON pointers
 
-A value inside a JSON document can be found using the `getJSONPointerValue()` method with a [JSON pointer] (https://tools.ietf.org/html/rfc6901) string argument:
+A value inside a JSON document can be found using the `getJSONPointerValue()` method with a [JSON pointer](https://tools.ietf.org/html/rfc6901) string argument:
 
 ```json
 {
