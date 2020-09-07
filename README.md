@@ -12,6 +12,7 @@ This repository defines a library-agnostic API for C++ to work with JSON documen
 
 * JSON parsing
 * String serialization
+* JSON pointers
 * JSON schema validation
 * Unicode
 
@@ -69,6 +70,22 @@ Serialize the document into a string:
 ```cpp
 std::string serializedJSON = jsonDocument->serialize();
 std::cout << "Serialized JSON:" << serializedJSON << std::endl;
+```
+
+### JSON pointers
+
+A value inside a JSON document can be found using the `getJSONPointerValue()` method with a [JSON pointer] (https://tools.ietf.org/html/rfc6901) string argument:
+
+```json
+{
+    "foo" : ["bar", "baz"],
+    "pi" : 3.1416
+}
+
+```cpp
+auto jsonValue1 = jsonRootValue.getJSONPointerValue("/foo/1"); // "baz"
+auto jsonValue2 = jsonRootValue.getJSONPointerValue("/pi"); // 3.1416
+auto jsonValue3 = jsonRootValue.getJSONPointerValue("/not/found"); // null
 ```
 
 ### JSON schema validation
