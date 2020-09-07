@@ -78,8 +78,8 @@ A value inside a JSON document can be found using the `getJSONPointerValue()` me
 
 ```json
 {
-    "foo" : ["bar", "baz"],
-    "pi" : 3.1416
+    "foo": ["bar", "baz"],
+    "pi": 3.1416
 }
 ```
 
