@@ -81,6 +81,7 @@ A value inside a JSON document can be found using the `getJSONPointerValue()` me
     "foo" : ["bar", "baz"],
     "pi" : 3.1416
 }
+```
 
 ```cpp
 auto jsonValue1 = jsonRootValue.getJSONPointerValue("/foo/1"); // "baz"
