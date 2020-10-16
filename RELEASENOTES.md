@@ -71,8 +71,8 @@
 ### Bug Fixes
 
 - Splitted Conan packages of this repository in two:
--- JSONAdapterInterface (header only package)
--- JSONAdapterTestUtilities
+  - JSONAdapterInterface (header only package)
+  - JSONAdapterTestUtilities
 
 
 ## Changes for version 1.0.2 (10 Oct 2019)
