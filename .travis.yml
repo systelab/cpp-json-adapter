@@ -100,8 +100,13 @@ script:
   - cd ..
 
 deploy:
-  provider: script
-  skip_cleanup: true
-  script: bash ./ci/deploy.sh -v "${TRAVIS_TAG:1}"
-  on:
-    tags: true
+  - provider: script
+    skip_cleanup: true
+    script: bash ./ci/deploy.sh -v "${TRAVIS_TAG:1}"
+    on:
+      tags: true
+  - provider: script
+    script: bash ./ci/build_docs.sh -o "systelab" -s "cpp-json-adapter" -t "${TRAVIS_TAG}" -c "Travis" -n "${COMPILER_NAME} ${BUILD_TYPE}" -j "${TRAVIS_JOB_ID}"
+    skip_cleanup: true
+    on:
+      tags: true
