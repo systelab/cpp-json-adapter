@@ -28,13 +28,13 @@ environment:
     platform: Win32
     visual_studio: Visual Studio 15 2017
     compiler_toolset: v141
-    gtest: 1.7.0
+    gtest: 1.10.0
 
 install:
   - "SET PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%"
   - pip.exe install conan
   - conan user
-  - conan remote add systelab-public https://systelab.jfrog.io/artifactory/api/conan/cpp-conan-production-local
+  - conan remote add systelab-public https://csw.jfrog.io/artifactory/api/conan/cpp-conan-production-local --insert 0
   - conan --version
 
 before_build:
