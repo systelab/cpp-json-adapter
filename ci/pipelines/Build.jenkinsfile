@@ -22,74 +22,80 @@ pipeline
 		buildDiscarder(logRotator(numToKeepStr: '5'))
 	}
 
-	matrix
+	stages
 	{
-		axes
+		stage('Matrix')
 		{
-			axis
+			matrix
 			{
-				name 'BUILD_CONFIGURATION'
-				values 'NewtonDebug', 'NewtonRelease'
-			}
-		}
-
-		stages
-		{
-			stage('Checkout')
-			{
-				steps
+				axes
 				{
-					deleteDir()
-					checkout(
-						changelog: true,
-						poll: true,
-						scm: [
-							$class: 'GitSCM',
-							branches: scm.branches,
-							extensions: scm.extensions + 
-								[[
-									$class: 'CloneOption',
-									shallow: true,
-									noTags: true,
-									reference: '',
-									timeout: 10
-								]] +
-								[[
-									$class: 'RelativeTargetDirectory',
-									relativeTargetDir: "${BUILD_CONFIGURATION}"
-								]],
-							userRemoteConfigs: scm.userRemoteConfigs
-						]
-					)
-				}
-			}
-
-			stage('Build')
-			{
-				steps
-				{
-					script
+					axis
 					{
-						sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/stable -s build_type=Debug -s compiler.toolset=v142 -s arch=x86_64"
-						sh "md build"
-						sh "cd build"
-						sh "conan install ../JSONAdapterTestUtilities -s build_type=Debug -s compiler.toolset=v142 -s arch=x86_64 -e VERSION=${version} -o gtest=1.10.0"
-						sh "cmake .. -G "Visual Studio 16 2019" -A %PLATFORM%"
+						name 'BUILD_CONFIGURATION'
+						values 'NewtonDebug', 'NewtonRelease'
 					}
 				}
-			}
 
-			stage('Deploy')
-			{
-				when
+				stages
 				{
-					expression { return params.uploadTestingPkg }
-				}
-				steps
-				{
-					script
+					stage('Checkout')
 					{
-						echo "Pending"
+						steps
+						{
+							deleteDir()
+							checkout(
+								changelog: true,
+								poll: true,
+								scm: [
+									$class: 'GitSCM',
+									branches: scm.branches,
+									extensions: scm.extensions + 
+										[[
+											$class: 'CloneOption',
+											shallow: true,
+											noTags: true,
+											reference: '',
+											timeout: 10
+										]] +
+										[[
+											$class: 'RelativeTargetDirectory',
+											relativeTargetDir: "${BUILD_CONFIGURATION}"
+										]],
+									userRemoteConfigs: scm.userRemoteConfigs
+								]
+							)
+						}
+					}
+
+					stage('Build')
+					{
+						steps
+						{
+							script
+							{
+								sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/stable -s build_type=Debug -s compiler.toolset=v142 -s arch=x86_64"
+								sh "md build"
+								sh "cd build"
+								sh "conan install ../JSONAdapterTestUtilities -s build_type=Debug -s compiler.toolset=v142 -s arch=x86_64 -e VERSION=${version} -o gtest=1.10.0"
+								sh "cmake .. -G "Visual Studio 16 2019" -A %PLATFORM%"
+							}
+						}
+					}
+
+					stage('Deploy')
+					{
+						when
+						{
+							expression { return params.uploadTestingPkg }
+						}
+						steps
+						{
+							script
+							{
+								echo "Pending"
+							}
+						}
 					}
 				}
 			}
