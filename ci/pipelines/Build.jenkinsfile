@@ -40,7 +40,6 @@ pipeline
 
 				stages
 				{
-					def props
 					stage('Checkout')
 					{
 						steps
@@ -81,7 +80,7 @@ pipeline
 							{
 								script
 								{
-									props = readProperties file:"ci/pipelines/${CONFIGURATION}.properties"							
+									def props = readProperties file:"ci/pipelines/${CONFIGURATION}.properties"							
 									props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
 
 									sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} --force"
@@ -111,6 +110,7 @@ pipeline
 							{
 								dir("${CONFIGURATION}")
 								{
+									def props = readProperties file:"ci/pipelines/${CONFIGURATION}.properties"	
 									sh "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r ${props.conanRemoteName} --force"
 									sh "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r ${props.conanRemoteName} --force"
 								}
