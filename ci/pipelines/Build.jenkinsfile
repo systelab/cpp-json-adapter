@@ -39,53 +39,56 @@ pipeline
 
 				stages
 				{
-					dir("${BUILD_CONFIGURATION}")
+					stage('Checkout')
 					{
-						stage('Checkout')
+						steps
 						{
-							steps
+							dir("${BUILD_CONFIGURATION}")
 							{
 								deleteDir()
-								checkout(
-									changelog: true,
-									poll: true,
-									scm: [
-										$class: 'GitSCM',
-										branches: scm.branches,
-										extensions: scm.extensions + 
-											[[
-												$class: 'CloneOption',
-												shallow: true,
-												noTags: true,
-												reference: '',
-												timeout: 10
-											]] +
-											[[
-												$class: 'RelativeTargetDirectory',
-												relativeTargetDir: "${BUILD_CONFIGURATION}"
-											]],
-										userRemoteConfigs: scm.userRemoteConfigs
-									]
-								)
 							}
+							checkout(
+								changelog: true,
+								poll: true,
+								scm: [
+									$class: 'GitSCM',
+									branches: scm.branches,
+									extensions: scm.extensions + 
+										[[
+											$class: 'CloneOption',
+											shallow: true,
+											noTags: true,
+											reference: '',
+											timeout: 10
+										]] +
+										[[
+											$class: 'RelativeTargetDirectory',
+											relativeTargetDir: "${BUILD_CONFIGURATION}"
+										]],
+									userRemoteConfigs: scm.userRemoteConfigs
+								]
+							)
 						}
+					}
 
-						stage('Read properties')
+					stage('Read properties')
+					{
+						steps
 						{
-							steps
+							script
 							{
-								script
-								{
-									println 'Reading configuration properties'
-									props = readProperties file:"${BUILD_CONFIGURATION}/ci/pipelines/${BUILD_CONFIGURATION}.properties"
-									props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
-								}
+								println 'Reading configuration properties'
+								props = readProperties file:"${BUILD_CONFIGURATION}/ci/pipelines/${BUILD_CONFIGURATION}.properties"
+								props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
 							}
 						}
+					}
 
-						stage('Build')
+					stage('Build')
+					{
+						steps
 						{
-							steps
+							dir("${BUILD_CONFIGURATION}")
 							{
 								script
 								{
@@ -99,19 +102,19 @@ pipeline
 								}
 							}
 						}
+					}
 
-						stage('Deploy')
+					stage('Deploy')
+					{
+						when
 						{
-							when
+							expression { return params.uploadTestingPkg }
+						}
+						steps
+						{
+							script
 							{
-								expression { return params.uploadTestingPkg }
-							}
-							steps
-							{
-								script
-								{
-									echo "Pending"
-								}
+								echo "Pending"
 							}
 						}
 					}
