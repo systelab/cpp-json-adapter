@@ -92,7 +92,7 @@ pipeline
 							{
 								script
 								{
-									sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=" + props["${CONFIGURATION"}].conanBuildType + " -s compiler.toolset=" + props["${CONFIGURATION"}].conanCompilerToolset + " -s arch=" + props["${CONFIGURATION"}].conanArch + " --force"
+									sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=" + props["${CONFIGURATION}"].conanBuildType + " -s compiler.toolset=" + props["${CONFIGURATION}"].conanCompilerToolset + " -s arch=" + props["${CONFIGURATION}"].conanArch + " --force"
 									sh "mkdir build"
 									dir("build")
 									{
