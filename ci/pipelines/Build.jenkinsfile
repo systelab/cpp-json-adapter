@@ -39,56 +39,53 @@ pipeline
 
 				stages
 				{
-					stage('Checkout')
+					dir("${BUILD_CONFIGURATION}")
 					{
-						options {
-							lock( 'synchronous-matrix' )
-						}
-						steps
+						stage('Checkout')
 						{
-							deleteDir()
-							checkout(
-								changelog: true,
-								poll: true,
-								scm: [
-									$class: 'GitSCM',
-									branches: scm.branches,
-									extensions: scm.extensions + 
-										[[
-											$class: 'CloneOption',
-											shallow: true,
-											noTags: true,
-											reference: '',
-											timeout: 10
-										]] +
-										[[
-											$class: 'RelativeTargetDirectory',
-											relativeTargetDir: "${BUILD_CONFIGURATION}"
-										]],
-									userRemoteConfigs: scm.userRemoteConfigs
-								]
-							)
-						}
-					}
-
-					stage('Read properties')
-					{
-						steps
-						{
-							script
+							steps
 							{
-								println 'Reading configuration properties'
-								props = readProperties file:"${BUILD_CONFIGURATION}/ci/pipelines/${BUILD_CONFIGURATION}.properties"
-								props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
+								deleteDir()
+								checkout(
+									changelog: true,
+									poll: true,
+									scm: [
+										$class: 'GitSCM',
+										branches: scm.branches,
+										extensions: scm.extensions + 
+											[[
+												$class: 'CloneOption',
+												shallow: true,
+												noTags: true,
+												reference: '',
+												timeout: 10
+											]] +
+											[[
+												$class: 'RelativeTargetDirectory',
+												relativeTargetDir: "${BUILD_CONFIGURATION}"
+											]],
+										userRemoteConfigs: scm.userRemoteConfigs
+									]
+								)
 							}
 						}
-					}
 
-					stage('Build')
-					{
-						steps
+						stage('Read properties')
 						{
-							dir("${BUILD_CONFIGURATION}")
+							steps
+							{
+								script
+								{
+									println 'Reading configuration properties'
+									props = readProperties file:"${BUILD_CONFIGURATION}/ci/pipelines/${BUILD_CONFIGURATION}.properties"
+									props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
+								}
+							}
+						}
+
+						stage('Build')
+						{
+							steps
 							{
 								script
 								{
@@ -102,19 +99,19 @@ pipeline
 								}
 							}
 						}
-					}
 
-					stage('Deploy')
-					{
-						when
+						stage('Deploy')
 						{
-							expression { return params.uploadTestingPkg }
-						}
-						steps
-						{
-							script
+							when
 							{
-								echo "Pending"
+								expression { return params.uploadTestingPkg }
+							}
+							steps
+							{
+								script
+								{
+									echo "Pending"
+								}
 							}
 						}
 					}
