@@ -41,6 +41,9 @@ pipeline
 				{
 					stage('Checkout')
 					{
+						options {
+							lock( 'synchronous-matrix' )
+						}
 						steps
 						{
 							deleteDir()
