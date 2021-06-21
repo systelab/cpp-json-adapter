@@ -85,14 +85,16 @@ pipeline
 					{
 						steps
 						{
-							script
+							dir("${BUILD_CONFIGURATION}")
 							{
-								sh "cd ${BUILD_CONFIGURATION}"
-								sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/stable -s build_type=Debug -s compiler.toolset=${props.conanCompilerToolset} -s arch=x86_64"
-								sh "md build"
-								sh "cd build"
-								sh "conan install ../JSONAdapterTestUtilities -s build_type=Debug -s compiler.toolset=v142 -s arch=x86_64 -e VERSION=${version} -o gtest=1.10.0"
-								sh "cmake .. -G "Visual Studio 16 2019" -A %PLATFORM%"
+								script
+								{
+									sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/stable -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch}"
+									sh "md build"
+									sh "cd build"
+									sh "conan install ../JSONAdapterTestUtilities -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -e VERSION=${version} -o gtest=${props.conanGTestVersion}"
+									sh "cmake .. -G '${props.cmakeVS}' -A ${props.cmakePlatform}"
+								}
 							}
 						}
 					}
