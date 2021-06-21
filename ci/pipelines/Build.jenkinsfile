@@ -68,13 +68,27 @@ pipeline
 						}
 					}
 
+					stage('Read properties')
+					{
+						steps
+						{
+							script
+							{
+								println 'Reading configuration properties'
+								props = readProperties file:'${BUILD_CONFIGURATION}/ci/pipelines/${BUILD_CONFIGURATION}.properties'
+								props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
+							}
+						}
+					}
+
 					stage('Build')
 					{
 						steps
 						{
 							script
 							{
-								sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/stable -s build_type=Debug -s compiler.toolset=v142 -s arch=x86_64"
+								sh "cd ${BUILD_CONFIGURATION}"
+								sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/stable -s build_type=Debug -s compiler.toolset=${props.conanCompilerToolset} -s arch=x86_64"
 								sh "md build"
 								sh "cd build"
 								sh "conan install ../JSONAdapterTestUtilities -s build_type=Debug -s compiler.toolset=v142 -s arch=x86_64 -e VERSION=${version} -o gtest=1.10.0"
