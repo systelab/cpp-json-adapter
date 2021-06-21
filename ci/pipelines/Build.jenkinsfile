@@ -89,7 +89,7 @@ pipeline
 									{
 										sh "conan install ../JSONAdapterTestUtilities -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -e VERSION=${version} -e CHANNEL=${channel} -o gtest=${props.conanGTestVersion}"
 										sh "cmake .. -G '${props.cmakeVS}' -A ${props.cmakePlatform}"	
-										sh "cmake --build ."
+										sh "cmake --build . --config ${props.cmakeConfiguration}"
 										sh "conan export-pkg ../JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion} --force"
 										sh "conan test ../test_package/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion}"
 									}
