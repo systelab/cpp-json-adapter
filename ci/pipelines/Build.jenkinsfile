@@ -1,0 +1,98 @@
+def channel = "testing"
+def version = "0.0.0"
+
+pipeline
+{
+	agent
+	{
+		label 'lib-build'
+	}
+
+	parameters
+	{
+		booleanParam( name: 'uploadTestingPkg',
+					  description: 'Whether or not to upload testing conan package',
+					  defaultValue: false )
+	}
+
+	options
+	{
+		skipDefaultCheckout(true)
+		disableConcurrentBuilds()
+		buildDiscarder(logRotator(numToKeepStr: '5'))
+	}
+
+	matrix
+	{
+		axes
+		{
+			axis
+			{
+				name 'BUILD_CONFIGURATION'
+				values 'NewtonDebug', 'NewtonRelease'
+			}
+		}
+
+		stages
+		{
+			stage('Checkout')
+			{
+				steps
+				{
+					deleteDir()
+					checkout(
+						changelog: true,
+						poll: true,
+						scm: [
+							$class: 'GitSCM',
+							branches: scm.branches,
+							extensions: scm.extensions + 
+								[[
+									$class: 'CloneOption',
+									shallow: true,
+									noTags: true,
+									reference: '',
+									timeout: 10
+								]] +
+								[[
+									$class: 'RelativeTargetDirectory',
+									relativeTargetDir: "${BUILD_CONFIGURATION}"
+								]],
+							userRemoteConfigs: scm.userRemoteConfigs
+						]
+					)
+				}
+			}
+
+			stage('Build')
+			{
+				steps
+				{
+					script
+					{
+						sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/stable -s build_type=Debug -s compiler.toolset=v142 -s arch=x86_64"
+						sh "md build"
+						sh "cd build"
+						sh "conan install ../JSONAdapterTestUtilities -s build_type=Debug -s compiler.toolset=v142 -s arch=x86_64 -e VERSION=${version} -o gtest=1.10.0"
+						sh "cmake .. -G "Visual Studio 16 2019" -A %PLATFORM%"
+					}
+				}
+			}
+
+			stage('Deploy')
+			{
+				when
+				{
+					expression { return params.uploadTestingPkg }
+				}
+				steps
+				{
+					script
+					{
+						echo "Pending"
+					}
+				}
+			}
+		}
+	}
+}
