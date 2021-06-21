@@ -32,7 +32,7 @@ pipeline
 				{
 					axis
 					{
-						name 'BUILD_CONFIGURATION'
+						name 'CONFIGURATION'
 						values 'NewtonDebug', 'NewtonRelease'
 					}
 				}
@@ -43,7 +43,7 @@ pipeline
 					{
 						steps
 						{
-							dir("${BUILD_CONFIGURATION}")
+							dir("${CONFIGURATION}")
 							{
 								deleteDir()
 							}
@@ -63,7 +63,7 @@ pipeline
 										]] +
 										[[
 											$class: 'RelativeTargetDirectory',
-											relativeTargetDir: "${BUILD_CONFIGURATION}"
+											relativeTargetDir: "${CONFIGURATION}"
 										]],
 									userRemoteConfigs: scm.userRemoteConfigs
 								]
@@ -78,8 +78,8 @@ pipeline
 							script
 							{
 								println 'Reading configuration properties'
-								props = readProperties file:"${BUILD_CONFIGURATION}/ci/pipelines/${BUILD_CONFIGURATION}.properties"
-								props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
+								props["${CONFIGURATION"}] = readProperties file:"${CONFIGURATION}/ci/pipelines/${CONFIGURATION}.properties"
+								props["${CONFIGURATION"}].each { propKey, propValue -> println "${propKey}: ${propValue}" }
 							}
 						}
 					}
@@ -88,11 +88,11 @@ pipeline
 					{
 						steps
 						{
-							dir("${BUILD_CONFIGURATION}")
+							dir("${CONFIGURATION}")
 							{
 								script
 								{
-									sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} --force"
+									sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=" + props["${CONFIGURATION"}].conanBuildType + " -s compiler.toolset=" + props["${CONFIGURATION"}].conanCompilerToolset + " -s arch=" + props["${CONFIGURATION"}].conanArch + " --force"
 									sh "mkdir build"
 									dir("build")
 									{
@@ -117,7 +117,7 @@ pipeline
 						{
 							script
 							{
-								dir("${BUILD_CONFIGURATION}")
+								dir("${CONFIGURATION}")
 								{
 									sh "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r ${props.conanRemoteName} --force"
 									sh "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r ${props.conanRemoteName} --force"
