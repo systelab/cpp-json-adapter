@@ -24,7 +24,7 @@ pipeline
 
 	stages
 	{
-		stage('Matrix')
+		stage('Configuration Matrix')
 		{
 			matrix
 			{
@@ -71,7 +71,7 @@ pipeline
 						}
 					}
 
-					stage('Read properties')
+					stage('Load configuration')
 					{
 						steps
 						{
