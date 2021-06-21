@@ -99,6 +99,8 @@ pipeline
 										sh "conan install ../JSONAdapterTestUtilities -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -e VERSION=${version} -e CHANNEL=${channel} -o gtest=${props.conanGTestVersion}"
 										sh "cmake .. -G '${props.cmakeVS}' -A ${props.cmakePlatform}"	
 										sh "cmake --build ."
+										sh "conan export-pkg ../JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion}"
+										sh "conan test ../test_package/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=%CONFIGURATION% -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion}"
 									}
 								}
 							}
@@ -115,7 +117,11 @@ pipeline
 						{
 							script
 							{
-								echo "Pending"
+								dir("${BUILD_CONFIGURATION}")
+								{
+									sh "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r ${props.conanRemoteName} --force"
+									sh "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r ${props.conanRemoteName} --force"
+								}
 							}
 						}
 					}
