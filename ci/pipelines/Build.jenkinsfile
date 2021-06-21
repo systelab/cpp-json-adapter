@@ -75,7 +75,7 @@ pipeline
 							script
 							{
 								println 'Reading configuration properties'
-								props = readProperties file:'${BUILD_CONFIGURATION}/ci/pipelines/${BUILD_CONFIGURATION}.properties'
+								props = readProperties file:"${BUILD_CONFIGURATION}/ci/pipelines/${BUILD_CONFIGURATION}.properties"
 								props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
 							}
 						}
