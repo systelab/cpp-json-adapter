@@ -1,5 +1,14 @@
 # Summary of changes
 
+## Changes for version 1.1.3 (7 Sep 2021)
+
+### Bug Fixes
+
+- Moved continuous integration to Jenkins
+- Deploy conan package into remote specific for C++ task force
+- Fixed use of "export_sources" definition in conan recipe
+
+
 ## Changes for version 1.1.2 (30 Mar 2021)
 
 ### Bug Fixes
