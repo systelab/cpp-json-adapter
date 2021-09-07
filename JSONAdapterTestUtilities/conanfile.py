@@ -24,7 +24,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
         else:
             self.requires("gtest/1.10.0#0c895f60b461f8fee0da53a84d659131")
 
-        self.requires("TestUtilitiesInterface/1.0.6@systelab/stable")
+        self.requires("TestUtilitiesInterface/1.0.8@systelab/stable")
         if ("%s" % self.version) == "None":
             self.requires("JSONAdapterInterface/%s@systelab/stable" % os.environ['VERSION'])
         else:
