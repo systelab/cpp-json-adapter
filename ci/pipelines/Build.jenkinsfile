@@ -90,26 +90,22 @@ pipeline
 							}
 						}
 					}
+				}
+			}
+		}
 
-					stage('Deploy')
-					{
-						when
-						{
-							expression { return params.uploadTestingPkg }
-						}
-						steps
-						{
-							script
-							{
-								dir("${CONFIGURATION}")
-								{
-									def props = readProperties file:"ci/pipelines/${CONFIGURATION}.properties"	
-									sh "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r ${props.conanRemoteName} --force"
-									sh "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r ${props.conanRemoteName} --force"
-								}
-							}
-						}
-					}
+		stage('Deploy')
+		{
+			when
+			{
+				expression { return params.uploadTestingPkg }
+			}
+			steps
+			{
+				script
+				{
+					sh "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r systelab-conan-local --force"
+					sh "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r systelab-conan-local --force"
 				}
 			}
 		}
