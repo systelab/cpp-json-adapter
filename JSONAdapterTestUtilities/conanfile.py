@@ -14,7 +14,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"gtest": ["1.7.0", "1.8.1", "1.10.0"]}
     default_options = "gtest=1.10.0"
-    exports_sources = "*"
+    exports_sources = "*", "!README.md"
 
     def requirements(self):
         if self.options.gtest == "1.7.0":
