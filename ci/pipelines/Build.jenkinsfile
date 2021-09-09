@@ -39,48 +39,51 @@ pipeline
 		}
 
 		stage('Matrix')
-		{		
-			script
+		{	
+			steps
 			{
-				def configurations = ['NewtonDebug', 'NewtonRelease']
-				for(int i=0; i < configurations.size(); i++)
+				script
 				{
-					stage(configurations[i]){
-						echo "Element: $i"
-					}
-
-					stage('Checkout ' + configurations[i])
+					def configurations = ['NewtonDebug', 'NewtonRelease']
+					for(int i=0; i < configurations.size(); i++)
 					{
-						steps
+						stage(configurations[i]){
+							echo "Element: $i"
+						}
+
+						stage('Checkout ' + configurations[i])
 						{
-							dir(configurations[i])
+							steps
 							{
-								deleteDir()
-								checkoutSourceCode()
+								dir(configurations[i])
+								{
+									deleteDir()
+									checkoutSourceCode()
+								}
 							}
 						}
-					}
 
-					stage('Build ' + configurations[i])
-					{
-						steps
+						stage('Build ' + configurations[i])
 						{
-							dir(configurations[i])
+							steps
 							{
-								script
+								dir(configurations[i])
 								{
-									def props = readProperties file:"ci/pipelines/${configurations[i]}.properties"							
-									props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
-
-									sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} --force"
-									sh "mkdir build"
-									dir("build")
+									script
 									{
-										sh "conan install ../JSONAdapterTestUtilities -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -e VERSION=${version} -e CHANNEL=${channel} -o gtest=${props.conanGTestVersion}"
-										sh "cmake .. -G '${props.cmakeVS}' -A ${props.cmakePlatform}"	
-										sh "cmake --build . --config ${props.cmakeConfiguration}"
-										sh "conan export-pkg ../JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion} --force"
-										sh "conan test ../test_package/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion}"
+										def props = readProperties file:"ci/pipelines/${configurations[i]}.properties"							
+										props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
+
+										sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} --force"
+										sh "mkdir build"
+										dir("build")
+										{
+											sh "conan install ../JSONAdapterTestUtilities -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -e VERSION=${version} -e CHANNEL=${channel} -o gtest=${props.conanGTestVersion}"
+											sh "cmake .. -G '${props.cmakeVS}' -A ${props.cmakePlatform}"	
+											sh "cmake --build . --config ${props.cmakeConfiguration}"
+											sh "conan export-pkg ../JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion} --force"
+											sh "conan test ../test_package/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion}"
+										}
 									}
 								}
 							}
