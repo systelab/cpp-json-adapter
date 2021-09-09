@@ -40,7 +40,10 @@ pipeline
 			}
 		}
 		
-
+		stage('Build')
+		{	
+			steps
+			{
 				script
 				{
 					def configurations = ['NewtonDebug', 'NewtonRelease']
@@ -64,7 +67,8 @@ pipeline
 						}
 					}
 				}
-
+			}
+		}
 
 		stage('Deploy')
 		{
