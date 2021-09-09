@@ -40,24 +40,20 @@ pipeline
 
 		stage('Matrix')
 		{		
-			matrix
+			script
 			{
-				axes
+				def configurations = ['NewtonDebug', 'NewtonRelease']
+				for(int i=0; i < configurations.size(); i++)
 				{
-					axis
-					{
-						name 'CONFIGURATION'
-						values 'NewtonDebug', 'NewtonRelease'
+					stage(configurations[i]){
+						echo "Element: $i"
 					}
-				}
 
-				stages
-				{
-					stage('Checkout')
+					stage('Checkout ' + configurations[i])
 					{
 						steps
 						{
-							dir("${CONFIGURATION}")
+							dir(configurations[i])
 							{
 								deleteDir()
 								checkoutSourceCode()
@@ -65,15 +61,15 @@ pipeline
 						}
 					}
 
-					stage('Build')
+					stage('Build ' + configurations[i])
 					{
 						steps
 						{
-							dir("${CONFIGURATION}")
+							dir(configurations[i])
 							{
 								script
 								{
-									def props = readProperties file:"ci/pipelines/${CONFIGURATION}.properties"							
+									def props = readProperties file:"ci/pipelines/${configurations[i]}.properties"							
 									props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
 
 									sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} --force"
