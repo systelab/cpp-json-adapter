@@ -1,6 +1,12 @@
 def channel = "testing"
 def version = "0.0.0"
 
+
+library identifier: "cpp-jenkins-pipelines@master", retriever: modernSCM(
+  [$class: "GitSCMSource",
+   remote: "https://github.com/systelab/cpp-jenkins-pipelines.git",
+   credentialsId: "GitHubCredentials"])
+
 pipeline
 {
 	agent
@@ -37,49 +43,36 @@ pipeline
 					channel = params.stable ? "stable" : "testing"
 				}
 				deleteDir()
-				checkout(
-					changelog: true,
-					poll: true,
-					scm: [
-						$class: 'GitSCM',
-						branches: [[name: 'refs/tags/v${version}']],
-						extensions: scm.extensions + 
-							[[
-								$class: 'CloneOption',
-								shallow: true,
-								noTags: false,
-								reference: '',
-								timeout: 10
-							]],
-						userRemoteConfigs: scm.userRemoteConfigs
-					]
-				)
-			}
-		}
-
-		stage('Read properties')
-		{
-			steps
-			{
-				script
-				{
-					println 'Reading pipeline properties'
-					props = readProperties file:'ci/pipelines/pipeline.properties'
-					props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
-				}
+				configureConanRemotes()
+				checkoutSourceCodeFromTag(version)
 			}
 		}
 
 		stage('Build')
-		{
+		{	
 			steps
 			{
 				script
 				{
-					props.conanHeaderPackages.split(',').each
+					def configurations = ['NewtonDebug', 'NewtonRelease']
+					for(int i=0; i < configurations.size(); i++)
 					{
-						headerPkg ->
-						sh script: "conan export-pkg conanfile.py ${headerPkg}/${version}@systelab/${channel} --force", label: "Build conan package for ${headerPkg}"
+						stage('Build ' + configurations[i])
+						{
+							def props = readProperties file: "ci/pipelines/${configurations[i]}.properties"							
+							props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
+
+							sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} --force"
+							sh "mkdir build-${configurations[i]}"
+							dir("build-${configurations[i]}")
+							{
+								sh "conan install ../JSONAdapterTestUtilities -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -e VERSION=${version} -e CHANNEL=${channel} -o gtest=${props.conanGTestVersion}"
+								sh "cmake .. -G '${props.cmakeVS}' -A ${props.cmakePlatform}"	
+								sh "cmake --build . --config ${props.cmakeConfiguration}"
+								sh "conan export-pkg ../JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion} --force"
+								sh "conan test ../test_package/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion}"
+							}
+						}
 					}
 				}
 			}
@@ -91,10 +84,8 @@ pipeline
 			{
 				script
 				{
-					props.conanUploadPackages.split(',').each
-					{ uploadPkg ->
-						sh script: "conan upload ${uploadPkg}/${version}@systelab/${channel} --all -r newton-conan-production-local --force", label: "Deploy conan packet for ${uploadPkg}"
-					}
+					sh "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r systelab-conan-local --force"
+					sh "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r systelab-conan-local --force"
 				}
 			}
 		}
