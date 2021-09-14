@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/systelab/cpp-json-adapter.svg?branch=master)](https://travis-ci.org/systelab/cpp-json-adapter)
-[![Build status](https://ci.appveyor.com/api/projects/status/bmx6oen56aowb283?svg=true)](https://ci.appveyor.com/project/systelab/cpp-json-adapter)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/839900a576fe47458e10fae7441476b3)](https://www.codacy.com/gh/systelab/cpp-json-adapter/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=systelab/cpp-json-adapter&amp;utm_campaign=Badge_Grade)
 
 
