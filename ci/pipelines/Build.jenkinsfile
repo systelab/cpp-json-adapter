@@ -80,7 +80,9 @@ pipeline
 			{
 				script
 				{
+					sh "conan remove JSONAdapterInterface/${version}@systelab/${channel} -r systelab-conan-local --force"
 					sh "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r systelab-conan-local --force"
+					sh "conan remove JSONAdapterTestUtilities/${version}@systelab/${channel} -r systelab-conan-local --force"
 					sh "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r systelab-conan-local --force"
 				}
 			}
