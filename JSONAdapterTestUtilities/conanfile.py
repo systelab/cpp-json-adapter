@@ -29,7 +29,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
             channel = os.environ['CHANNEL'] if "CHANNEL" in os.environ else "stable"
             self.requires(f"JSONAdapterInterface/{os.environ['VERSION']}@systelab/{channel}")
         else:
-            self.requires("JSONAdapterInterface/%s@systelab/stable" % self.version)
+            self.requires(f"JSONAdapterInterface/{self.version}@systelab/{self.channel}")
 
     def build(self):
         cmake = CMake(self)
