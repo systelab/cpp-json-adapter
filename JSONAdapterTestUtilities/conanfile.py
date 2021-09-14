@@ -26,7 +26,8 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
 
         self.requires("TestUtilitiesInterface/1.0.8@systelab/stable")
         if ("%s" % self.version) == "None":
-            self.requires("JSONAdapterInterface/%s@systelab/stable" % os.environ['VERSION'])
+            channel = os.environ['CHANNEL'] if "CHANNEL" in os.environ else "stable"
+            self.requires(f"JSONAdapterInterface/{os.environ['VERSION']}@systelab/{channel}")
         else:
             self.requires("JSONAdapterInterface/%s@systelab/stable" % self.version)
 
