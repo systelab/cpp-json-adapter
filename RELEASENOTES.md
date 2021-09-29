@@ -1,5 +1,12 @@
 # Summary of changes
 
+## Changes for version 1.1.4 (29 Sep 2021)
+
+### Bug Fixes
+
+- Added configurations for the Snow project into continuous integration
+
+
 ## Changes for version 1.1.3 (14 Sep 2021)
 
 ### Bug Fixes
