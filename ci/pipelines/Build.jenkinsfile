@@ -46,7 +46,7 @@ pipeline
 			{
 				script
 				{
-					def configurations = ['NewtonDebug', 'NewtonRelease']
+					def configurations = ['NewtonDebug', 'NewtonRelease', 'SnowDebug', 'SnowRelease']
 					for(int i=0; i < configurations.size(); i++)
 					{
 						stage('Build ' + configurations[i])
