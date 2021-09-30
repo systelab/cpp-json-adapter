@@ -1,5 +1,12 @@
 # Summary of changes
 
+## Changes for version 1.1.5 (30 Sep 2021)
+
+### Bug Fixes
+
+- Fixed conan packaging for JSONAdapterInterface to not include test utilities files
+
+
 ## Changes for version 1.1.4 (29 Sep 2021)
 
 ### Bug Fixes
