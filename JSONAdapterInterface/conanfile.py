@@ -14,7 +14,7 @@ class JSONAdapterInterfaceConan(ConanFile):
     exports_sources = "*.h"
 
     def package(self):
-        self.copy("*.h", dst="include/JSONAdapterInterface")
+        self.copy("*.h", dst="include/JSONAdapterInterface", excludes="JSONAdapterTestUtilities/*.*")
 
     def package_info(self):
         self.info.header_only()
