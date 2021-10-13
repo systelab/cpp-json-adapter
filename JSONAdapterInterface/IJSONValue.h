@@ -4,7 +4,6 @@
 #include <memory>
 #include <vector>
 
-
 namespace systelab { namespace json {
 
 	enum Type
@@ -22,7 +21,13 @@ namespace systelab { namespace json {
 
 	class IJSONValue
 	{
+		template <typename Ref_> class ArrayIterator_;
+
 	public:
+		
+		using ArrayIterator = ArrayIterator_<IJSONValue&>;
+		using ArrayConstIterator = ArrayIterator_<const IJSONValue&>;
+
 		virtual ~IJSONValue() {};
 
 		virtual Type getType() const = 0;
@@ -69,6 +74,11 @@ namespace systelab { namespace json {
 		// Only for array values
 		virtual unsigned int getArrayValueCount() const = 0;
 		virtual IJSONValue& getArrayValue(unsigned int) const = 0;
+		
+		virtual ArrayIterator begin() = 0;
+		virtual ArrayIterator end() = 0;
+		virtual ArrayConstIterator begin() const = 0;
+		virtual ArrayConstIterator end() const = 0;
 
 		virtual void addArrayValue(std::unique_ptr<IJSONValue>) = 0;
 		virtual void clearArray() = 0;
@@ -80,6 +90,41 @@ namespace systelab { namespace json {
 		// Factory methods
 		virtual std::unique_ptr<IJSONValue> buildValue(Type) const = 0;
 		virtual std::unique_ptr<IJSONDocument> buildDocument() const = 0;
+
+	private:
+
+		// Array iterator for range-loop
+		template <typename Ref_>
+		class ArrayIterator_
+		{
+		public:
+
+			~ArrayIterator_() = default;
+
+			ArrayIterator_() = delete;
+
+			ArrayIterator_(const IJSONValue& value, int distance) : pVal_(&value), distance_(distance) {};
+
+			Ref_ operator*() const
+			{
+				return (Ref_)pVal_->getArrayValue(distance_);
+			}
+
+			void operator++()
+			{
+				++distance_;
+			}
+
+			bool operator!=(const ArrayIterator_<Ref_>& it)
+			{
+				return distance_ != it.distance_;
+			}
+
+		private:
+
+			const IJSONValue* pVal_;
+			int distance_;
+		};
 	};
 
 }}
