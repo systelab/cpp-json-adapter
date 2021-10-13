@@ -4,7 +4,6 @@
 #include <memory>
 #include <vector>
 
-
 namespace systelab { namespace json {
 
 	enum Type
@@ -22,7 +21,13 @@ namespace systelab { namespace json {
 
 	class IJSONValue
 	{
+		template <typename BaseIterator_, typename Ref_> class ArrayIterator_;
+
 	public:
+		
+		using ArrayIterator = ArrayIterator_< std::vector<std::unique_ptr<IJSONValue>>::iterator, IJSONValue&>;
+		using ArrayConstIterator = ArrayIterator_< std::vector<std::unique_ptr<IJSONValue>>::const_iterator, const IJSONValue&>;
+
 		virtual ~IJSONValue() {};
 
 		virtual Type getType() const = 0;
@@ -69,6 +74,11 @@ namespace systelab { namespace json {
 		// Only for array values
 		virtual unsigned int getArrayValueCount() const = 0;
 		virtual IJSONValue& getArrayValue(unsigned int) const = 0;
+		
+		virtual ArrayIterator begin() = 0;
+		virtual ArrayIterator end() = 0;
+		virtual ArrayConstIterator begin() const = 0;
+		virtual ArrayConstIterator end() const = 0;
 
 		virtual void addArrayValue(std::unique_ptr<IJSONValue>) = 0;
 		virtual void clearArray() = 0;
@@ -80,6 +90,29 @@ namespace systelab { namespace json {
 		// Factory methods
 		virtual std::unique_ptr<IJSONValue> buildValue(Type) const = 0;
 		virtual std::unique_ptr<IJSONDocument> buildDocument() const = 0;
+
+	private:
+
+		// Array iterator for range-loop
+		template <typename BaseIterator_, typename Ref_>
+		class ArrayIterator_ : public BaseIterator_
+		{
+		public:
+
+			virtual ~ArrayIterator_() = default;
+
+			ArrayIterator_() = delete;
+
+			ArrayIterator_(const BaseIterator_& it) : BaseIterator_(it) {};
+
+			Ref_ operator*() const
+			{
+				const BaseIterator_ it = *this;
+				const BaseIterator_::value_type& p = *it;
+				Ref_ r = *p;
+				return r;
+			}
+		};
 	};
 
 }}
