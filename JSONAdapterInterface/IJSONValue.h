@@ -21,12 +21,12 @@ namespace systelab { namespace json {
 
 	class IJSONValue
 	{
-		template <typename BaseIterator_, typename Ref_> class ArrayIterator_;
+		template <typename Ref_> class ArrayIterator_;
 
 	public:
 		
-		using ArrayIterator = ArrayIterator_< std::vector<std::unique_ptr<IJSONValue>>::iterator, IJSONValue&>;
-		using ArrayConstIterator = ArrayIterator_< std::vector<std::unique_ptr<IJSONValue>>::const_iterator, const IJSONValue&>;
+		using ArrayIterator = ArrayIterator_<IJSONValue&>;
+		using ArrayConstIterator = ArrayIterator_<const IJSONValue&>;
 
 		virtual ~IJSONValue() {};
 
@@ -94,24 +94,36 @@ namespace systelab { namespace json {
 	private:
 
 		// Array iterator for range-loop
-		template <typename BaseIterator_, typename Ref_>
-		class ArrayIterator_ : public BaseIterator_
+		template <typename Ref_>
+		class ArrayIterator_
 		{
 		public:
 
-			virtual ~ArrayIterator_() = default;
+			~ArrayIterator_() = default;
 
 			ArrayIterator_() = delete;
 
-			ArrayIterator_(const BaseIterator_& it) : BaseIterator_(it) {};
+			ArrayIterator_(const IJSONValue& value, int distance) : pVal_(&value), distance_(distance) {};
 
 			Ref_ operator*() const
 			{
-				const BaseIterator_ it = *this;
-				const BaseIterator_::value_type& p = *it;
-				Ref_ r = *p;
-				return r;
+				return (Ref_)pVal_->getArrayValue(distance_);
 			}
+
+			void operator++()
+			{
+				++distance_;
+			}
+
+			bool operator!=(const ArrayIterator_<Ref_>& it)
+			{
+				return distance_ != it.distance_;
+			}
+
+		private:
+
+			const IJSONValue* pVal_;
+			int distance_;
 		};
 	};
 
