@@ -1,11 +1,15 @@
 def channel = "testing"
 def version = "0.0.0"
+def profile = "vs2022.conanprofile"
+def archs = ['x86', 'x86_64']
+def configs = ['Debug', 'Release']
 
-
-library identifier: "cpp-jenkins-pipelines@master", retriever: modernSCM(
-  [$class: "GitSCMSource",
-   remote: "https://github.com/systelab/cpp-jenkins-pipelines.git",
-   credentialsId: "GitHubCredentials"])
+library identifier: "jenkins-pipeline-utils@1.0.10",
+		retriever: modernSCM([
+			$class: "GitSCMSource",
+			remote: "https://bitbucket.org/Systelab/jenkins-pipeline-utils.git",
+			credentialsId: "BitbucketWerfen"
+		])
    
 pipeline
 {
@@ -16,8 +20,17 @@ pipeline
 
 	parameters
 	{
-		booleanParam( name: 'uploadTestingPkg',
-					  description: 'Whether or not to upload testing conan package',
+		string(	name: 'tag',
+				description: 'Version to build (must match the version of the tag that will be checked out), leave blank for checkout of current branch',
+				defaultValue: '',
+				trim: true)
+
+		booleanParam( name: 'stable',
+					  description: 'Show if generated library should be uploaded as stable or testing',
+					  defaultValue: false )
+		
+		booleanParam( name: 'uploadPackage',
+					  description: 'Whether or not to upload conan package',
 					  defaultValue: false )
 	}
 
@@ -34,9 +47,20 @@ pipeline
 		{
 			steps
 			{
-				deleteDir()
-				configureConanRemotes()
-				checkoutSourceCode()
+				cleanupWorkspace()
+				script 
+				{
+					if (params.tag == '')
+					{
+						checkoutFromGIT()
+					}
+					else
+					{
+						version = params.tag
+						checkoutFromGIT(scm.userRemoteConfigs[0].url, "v${version}", true)
+					}
+					channel = params.stable ? "stable" : "testing"
+				}
 			}
 		}
 		
@@ -46,23 +70,18 @@ pipeline
 			{
 				script
 				{
-					def configurations = ['NewtonDebug', 'NewtonRelease', 'SnowDebug', 'SnowRelease']
-					for(int i=0; i < configurations.size(); i++)
-					{
-						stage('Build ' + configurations[i])
-						{
-							def props = readProperties file:"ci/pipelines/${configurations[i]}.properties"							
-							props.each { propKey, propValue -> println "${propKey}: ${propValue}" }
-
-							sh "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} --force"
-							sh "mkdir build-${configurations[i]}"
-							dir("build-${configurations[i]}")
+					bat "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} --force"
+					archs.each
+					{ arch ->
+						configs.each
+						{ config ->
+							stage("Build ${config}|${arch}")
 							{
-								sh "conan install ../JSONAdapterTestUtilities -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -e VERSION=${version} -e CHANNEL=${channel} -o gtest=${props.conanGTestVersion}"
-								sh "cmake .. -G '${props.cmakeVS}' -A ${props.cmakePlatform}"	
-								sh "cmake --build . --config ${props.cmakeConfiguration}"
-								sh "conan export-pkg ../JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion} --force"
-								sh "conan test ../test_package/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} -s build_type=${props.conanBuildType} -s compiler.toolset=${props.conanCompilerToolset} -s arch=${props.conanArch} -o gtest=${props.conanGTestVersion}"
+								def buildFolder = "build/${config}-${arch}"
+								bat "conan install JSONAdapterTestUtilities/conanfile.py --install-folder ${buildFolder} --profile=${profile} -s arch=${arch} -s build_type=${config} -e VERSION=${version} -e CHANNEL=${channel} --update"
+								bat "conan build JSONAdapterTestUtilities/conanfile.py --build-folder ${buildFolder}" 
+								bat "conan export-pkg JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} --build-folder ${buildFolder} --force"
+								bat "conan test ./test_package/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} --profile=${profile} -s arch=${arch} -s build_type=${config}"
 							}
 						}
 					}
@@ -74,18 +93,28 @@ pipeline
 		{
 			when
 			{
-				expression { return params.uploadTestingPkg }
+				expression { params.uploadPackage }
 			}
 			steps
 			{
 				script
 				{
-					sh "conan remove JSONAdapterInterface/${version}@systelab/${channel} -r systelab-conan-local --force"
-					sh "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r systelab-conan-local --force"
-					sh "conan remove JSONAdapterTestUtilities/${version}@systelab/${channel} -r systelab-conan-local --force"
-					sh "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r systelab-conan-local --force"
+					bat "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r systelab-conan-local --force"
+					bat "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r systelab-conan-local --force"
 				}
 			}
+		}
+	}
+
+	post
+	{
+		always
+		{
+			script
+			{
+				currentBuild.description = "${version}/${channel}"
+			}
+			cleanupWorkspace()
 		}
 	}
 }
