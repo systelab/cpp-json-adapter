@@ -56,6 +56,11 @@ namespace systelab { namespace json { namespace test_utility {
 
 		MOCK_CONST_METHOD0(getArrayValueCount, unsigned int());
 		MOCK_CONST_METHOD1(getArrayValue, IJSONValue&(unsigned int));
+		
+		MOCK_METHOD0(begin, ArrayIterator());
+		MOCK_METHOD0(end, ArrayIterator());
+		MOCK_CONST_METHOD0(begin, ArrayConstIterator());
+		MOCK_CONST_METHOD0(end, ArrayConstIterator());
 
 		MOCK_CONST_METHOD1(addArrayValueProxy, void(IJSONValue*));
 		void addArrayValue(std::unique_ptr<IJSONValue> value)
