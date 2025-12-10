@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.2)
 find_package(gtest)
 
 # Find external dependencies
-find_package(TestUtilitiesInterface)
-find_package(JSONAdapterInterface)
+find_package(test-utilities-interface)
+find_package(json-adapter-interface)
 
 set(GTEST_PACKAGE_NAME gtest)
 find_package(${GTEST_PACKAGE_NAME})
@@ -22,7 +22,7 @@ set(JSON_ADAPTER_TEST_UTILITIES_PROJECT JSONAdapterTestUtilities)
 file(GLOB_RECURSE JSON_ADAPTER_TEST_UTILITIES_PROJECT_SRC "*.cpp")
 file(GLOB_RECURSE JSON_ADAPTER_TEST_UTILITIES_PROJECT_HDR "*.h")
 add_library(${JSON_ADAPTER_TEST_UTILITIES_PROJECT} STATIC ${JSON_ADAPTER_TEST_UTILITIES_PROJECT_SRC} ${JSON_ADAPTER_TEST_UTILITIES_PROJECT_HDR})
-target_link_libraries(${JSON_ADAPTER_TEST_UTILITIES_PROJECT} ${GTEST_PACKAGE_NAME}::${GTEST_PACKAGE_NAME} TestUtilitiesInterface::TestUtilitiesInterface JSONAdapterInterface::JSONAdapterInterface)
+target_link_libraries(${JSON_ADAPTER_TEST_UTILITIES_PROJECT} ${GTEST_PACKAGE_NAME}::${GTEST_PACKAGE_NAME} test-utilities-interface::test-utilities-interface json-adapter-interface::json-adapter-interface)
 
 # Configure source groups
 foreach(FILE ${JSON_ADAPTER_TEST_UTILITIES_PROJECT_SRC} ${JSON_ADAPTER_TEST_UTILITIES_PROJECT_HDR})

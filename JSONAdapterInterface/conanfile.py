@@ -1,20 +1,23 @@
-from conans import ConanFile
-
+from conan import ConanFile
+from conan.tools.files import copy
+import os
 
 class JSONAdapterInterfaceConan(ConanFile):
-    name = "JSONAdapterInterface"
+    name = "json-adapter-interface"
     description = "Interface of library-agnostic API for C++ to work with JSON documents"
     url = "https://github.com/systelab/cpp-json-adapter"
     homepage = "https://github.com/systelab/cpp-json-adapter"
     author = "CSW <csw@werfen.com>"
     topics = ("conan", "json", "adapter", "wrapper", "interface")
     license = "MIT"
-    generators = "cmake_find_package"
-    # No settings/options are necessary, this is header only
+
+    package_type = "header-library"
     exports_sources = "*.h"
 
     def package(self):
-        self.copy("*.h", dst="include/JSONAdapterInterface", excludes="JSONAdapterTestUtilities/*.*")
+        src = self.source_folder
+        dst = os.path.join(self.package_folder, "include", "JSONAdapterInterface")
+        copy(self, "*.h", dst=dst, src=src, excludes=("JSONAdapterTestUtilities/*.*",))
 
     def package_info(self):
-        self.info.header_only()
+        self.cpp_info.includedirs = ["include"]
