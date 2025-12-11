@@ -34,7 +34,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
         include_dst = os.path.join(self.package_folder, "include", "JSONAdapterTestUtilities")
         lib_dst = os.path.join(self.package_folder, "lib")
         lib_src = os.path.join(self.build_folder, "lib", str(self.settings.build_type))
-        print(lib_src)
+        
         copy(self, "*.h",                               dst=include_dst,    src=self.source_folder)
         copy(self, "*JSONAdapterTestUtilities.lib",     dst=lib_dst,        src=lib_src, keep_path=False)
         copy(self, "*JSONAdapterTestUtilities.pdb",     dst=lib_dst,        src=lib_src, keep_path=False)
