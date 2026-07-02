@@ -102,9 +102,9 @@ pipeline
 						{
 							def buildFolder = "build-${config}-${params.architecture}"
 							bat script: "conan build JSONAdapterTestUtilities/conanfile.py --output-folder=${buildFolder} -pr:a=./profile -s:a arch=${params.architecture} -s:a build_type=${config}", label: 'Build JSONAdapter test utilities'
-							bat script: "conan test ./test_package/conanfile.py JSONAdapterTestUtilities/${params.version} -s:a arch=${params.architecture} -pr:a=./profile -s:a build_type=${config}", label: 'Testing package'
-							
 							bat script: "conan export-pkg JSONAdapterTestUtilities/conanfile.py --version=${params.version} --output-folder=${buildFolder} -pr:a=./profile -s:a arch=${params.architecture} -s:a build_type=${config}", label: 'Exporting conan package'							
+							
+							bat script: "conan test ./test_package/conanfile.py json-adapter-test-utilities/${params.version} -s:a arch=${params.architecture} -pr:a=./profile -s:a build_type=${config}", label: 'Testing package'
 						}
 					}
 				}
@@ -123,8 +123,8 @@ pipeline
 				{
 					def forceUpload = (params.overrideExistingPackage) ? '--force' : ''
 					
-					bat "conan upload JSONAdapterInterface/${params.version} -r ${params.conanRemote} ${forceUpload}"
-					bat "conan upload JSONAdapterTestUtilities/${params.version} -r ${params.conanRemote} ${forceUpload}"
+					bat "conan upload json-adapter-interface/${params.version} -r ${params.conanRemote} ${forceUpload}"
+					bat "conan upload json-adapter-test-utilities/${params.version} -r ${params.conanRemote} ${forceUpload}"
 				}
 			}
 		}
@@ -136,7 +136,7 @@ pipeline
 		{
 			script
 			{
-				currentBuild.description = "${params.version}"
+				currentBuild.description = "${params.version} ${params.architecture}"
 			}
 			cleanupWorkspace()
 		}

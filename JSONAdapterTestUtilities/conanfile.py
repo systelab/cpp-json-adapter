@@ -1,7 +1,7 @@
 import os
 from conan import ConanFile
 from conan.tools.files import copy, collect_libs
-from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
+from conan.tools.cmake import CMake, cmake_layout
 
 class JSONAdapterTestUtilitiesConan(ConanFile):
     name = "json-adapter-test-utilities"
@@ -15,14 +15,15 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     exports_sources = "*", "!README.md", "!build*"
 
-    def generate(self):
-        CMakeToolchain(self).generate()
-        CMakeDeps(self).generate()
+    generators = "CMakeDeps", "CMakeToolchain"
+
+    def layout(self):
+        cmake_layout(self)
 
     def requirements(self):
-        self.requires("gtest/1.14.0")
-        self.requires("test-utilities-interface/1.1.0")
-        self.requires("json-adapter-interface/1.2.0")
+        self.requires("gtest/1.14.0", transitive_libs=True)
+        self.requires("test-utilities-interface/1.1.0", transitive_headers=True)
+        self.requires("json-adapter-interface/1.2.0", transitive_headers=True)
 
     def build(self):
         cmake = CMake(self)
@@ -31,6 +32,8 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
         cmake.build()
 
     def package(self):
+        cmake = CMake(self).install()
+		
         include_dst = os.path.join(self.package_folder, "include", "JSONAdapterTestUtilities")
         lib_dst = os.path.join(self.package_folder, "lib")
         lib_src = os.path.join(self.build_folder, "lib", str(self.settings.build_type))
@@ -41,4 +44,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
         copy(self, "*JSONAdapterTestUtilities.a",       dst=lib_dst,        src=lib_src, keep_path=False)
 
     def package_info(self):
+        self.cpp_info.set_property("cmake_file_name", "json-adapter-test-utilities")
+        self.cpp_info.set_property("cmake_target_name", "JSONAdapterTestUtilities::JSONAdapterTestUtilities")
+		
         self.cpp_info.libs = collect_libs(self)
