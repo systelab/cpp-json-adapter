@@ -1,37 +1,52 @@
-def channel = "testing"
-def version = "0.0.0"
-def profile = "vs2022.conanprofile"
-def archs = ['x86', 'x86_64']
-def configs = ['Debug', 'Release']
+def common = [:]
 
-library identifier: "jenkins-pipeline-utils@1.0.10",
-		retriever: modernSCM([
-			$class: "GitSCMSource",
-			remote: "https://bitbucket.org/Systelab/jenkins-pipeline-utils.git",
-			credentialsId: "BitbucketWerfen"
-		])
+@Library('aid-pipeline-utils@1.0.21') _
    
 pipeline
 {
 	agent
 	{
-		label 'lib-build'
+		label 'libGen-conan2'
 	}
 
 	parameters
 	{
-		string(	name: 'tag',
-				description: 'Version to build (must match the version of the tag that will be checked out), leave blank for checkout of current branch',
-				defaultValue: '',
-				trim: true)
+        string( name: 'version',
+                description: 'version to be generated',
+                defaultValue: '1.0.0',
+                trim: true )
 
-		booleanParam( name: 'stable',
-					  description: 'Show if generated library should be uploaded as stable or testing',
-					  defaultValue: false )
+		separator(name: "Package_Settings", sectionHeader: "Package Settings")
 		
+		choice( name: 'compiler', 
+                choices: ['vs2022'], 
+                description: 'Compiler')
+                
+		 choice( name: 'architecture', 
+				choices: ['x86', 'x86_64'],
+				description: 'Architecture of the package being built'
+				)
+				
+        string( name: 'configurations',
+                description: 'Build configurations to generate',
+                defaultValue: 'Release,Debug',
+                trim: true )
+		
+		separator(name: "Package_Upload", sectionHeader: "Package Upload")
+		
+		string( name: 'conanRemote',
+                description: 'Remote to upload the package, uploadPackage must be checked',
+                defaultValue: 'aid-conan-production-local',
+                trim: true )
+				
 		booleanParam( name: 'uploadPackage',
-					  description: 'Whether or not to upload conan package',
-					  defaultValue: false )
+                      description: 'Toggles package upload to Artifactory',
+                      defaultValue: false)
+					  
+		booleanParam( name: 'overrideExistingPackage',
+                      description: 'Overrides package in Artifactory',
+                      defaultValue: false)
+					  
 	}
 
 	options
@@ -43,23 +58,29 @@ pipeline
 
 	stages
 	{
-		stage('Checkout')
+		stage('Setup')
 		{
 			steps
 			{
 				cleanupWorkspace()
+				bat script: "conan remove JSONAdapterInterface/${params.version} --confirm", label: "Remove JSONAdapterInterface from cache"
+				bat script: "conan remove JSONAdapterTestUtilities/${params.version} --confirm", label: "Remove JSONAdapterTestUtilities from cache"
+				
+				checkoutFromGIT()
 				script 
+				{			
+					common.pipelineUtilities = load 'common/pipelineUtilities.groovy'
+				}
+			}
+		}
+		
+		stage('Prepare package')
+		{
+			steps
+			{
+				script
 				{
-					if (params.tag == '')
-					{
-						checkoutFromGIT()
-					}
-					else
-					{
-						version = params.tag
-						checkoutFromGIT(scm.userRemoteConfigs[0].url, "v${version}", true)
-					}
-					channel = params.stable ? "stable" : "testing"
+					common.pipelineUtilities.buildConanProfile(params.compiler)
 				}
 			}
 		}
@@ -70,19 +91,20 @@ pipeline
 			{
 				script
 				{
-					bat "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} --force"
-					archs.each
-					{ arch ->
-						configs.each
-						{ config ->
-							stage("Build ${config}|${arch}")
-							{
-								def buildFolder = "build/${config}-${arch}"
-								bat "conan install JSONAdapterTestUtilities/conanfile.py --install-folder ${buildFolder} --profile=${profile} -s arch=${arch} -s build_type=${config} -e VERSION=${version} -e CHANNEL=${channel} --update"
-								bat "conan build JSONAdapterTestUtilities/conanfile.py --build-folder ${buildFolder}" 
-								bat "conan export-pkg JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} --build-folder ${buildFolder} --force"
-								bat "conan test ./test_package/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} --profile=${profile} -s arch=${arch} -s build_type=${config}"
-							}
+					dir(JSONAdapterInterface)
+					{
+						bat script: "conan export-pkg . --version=${params.version} -pr:h=../profile", label: 'Exporting JSONAdapterInterface'
+					}
+					
+					params.configurations.split(',').each
+					{ config ->
+						stage("Build JSONAdapterTestUtilities ${config}|${params.architecture}")
+						{
+							def buildFolder = "build-${config}-${params.architecture}"
+							bat script: "conan build JSONAdapterTestUtilities/conanfile.py --output-folder=${buildFolder} -pr:a=./profile -s:a arch=${params.architecture} -s:a build_type=${config}", label: 'Build JSONAdapter test utilities'
+							bat script: "conan test ./test_package/conanfile.py JSONAdapterTestUtilities/${params.version} -s:a arch=${params.architecture} -pr:a=./profile -s:a build_type=${config}", label: 'Testing package'
+							
+							bat script: "conan export-pkg JSONAdapterTestUtilities/conanfile.py --version=${params.version} --output-folder=${buildFolder} -pr:a=./profile -s:a arch=${params.architecture} -s:a build_type=${config}", label: 'Exporting conan package'							
 						}
 					}
 				}
@@ -99,8 +121,10 @@ pipeline
 			{
 				script
 				{
-					bat "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r systelab-conan-local --force"
-					bat "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r systelab-conan-local --force"
+					def forceUpload = (params.overrideExistingPackage) ? '--force' : ''
+					
+					bat "conan upload JSONAdapterInterface/${params.version} -r ${params.conanRemote} ${forceUpload}"
+					bat "conan upload JSONAdapterTestUtilities/${params.version} -r ${params.conanRemote} ${forceUpload}"
 				}
 			}
 		}
@@ -112,7 +136,7 @@ pipeline
 		{
 			script
 			{
-				currentBuild.description = "${version}/${channel}"
+				currentBuild.description = "${params.version}"
 			}
 			cleanupWorkspace()
 		}
