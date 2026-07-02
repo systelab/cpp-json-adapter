@@ -91,7 +91,7 @@ pipeline
 			{
 				script
 				{
-					dir(JSONAdapterInterface)
+					dir('JSONAdapterInterface')
 					{
 						bat script: "conan export-pkg . --version=${params.version} -pr:h=../profile", label: 'Exporting JSONAdapterInterface'
 					}
