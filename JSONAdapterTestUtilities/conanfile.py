@@ -21,7 +21,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     def requirements(self):
         self.requires("gtest/1.14.0", transitive_headers=True)
 
-        self.requires("test-utilities-interface/1.0.8", transitive_headers=True)
+        self.requires("test-utilities-interface/1.1.0", transitive_headers=True)
         self.requires(f"json-adapter-interface/{self.version}", transitive_headers=True)
 
     def layout(self):
