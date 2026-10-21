@@ -1,2 +1,9 @@
 build
 extern
+CMakeUserPresets.json
+conanbuild*.bat
+conanrun*.sh
+conanrun*.bat
+conanbuildenv*.bat
+conanrunenv*.sh
+deactivate_conan*
