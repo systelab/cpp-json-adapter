@@ -1,6 +1,3 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/839900a576fe47458e10fae7441476b3)](https://www.codacy.com/gh/systelab/cpp-json-adapter/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=systelab/cpp-json-adapter&amp;utm_campaign=Badge_Grade)
-
-
 # C++ JSON Adapter interface
 
 This repository defines a library-agnostic API for C++ to work with JSON documents.

@@ -1,21 +1,20 @@
-def channel = "testing"
 def version = "0.0.0"
 def profile = "vs2022.conanprofile"
 def archs = ['x86', 'x86_64']
 def configs = ['Debug', 'Release']
 
-library identifier: "jenkins-pipeline-utils@1.0.10",
-		retriever: modernSCM([
-			$class: "GitSCMSource",
-			remote: "https://bitbucket.org/Systelab/jenkins-pipeline-utils.git",
-			credentialsId: "BitbucketWerfen"
-		])
+@Library('aid-pipeline-utils@1.0.23') _
    
 pipeline
 {
 	agent
 	{
 		label 'lib-build'
+	}
+
+	environment
+	{
+		PATH = "${env.USERPROFILE}\\.venvs\\conan2\\Scripts;${env.PATH}"
 	}
 
 	parameters
@@ -25,10 +24,6 @@ pipeline
 				defaultValue: '',
 				trim: true)
 
-		booleanParam( name: 'stable',
-					  description: 'Show if generated library should be uploaded as stable or testing',
-					  defaultValue: false )
-		
 		booleanParam( name: 'uploadPackage',
 					  description: 'Whether or not to upload conan package',
 					  defaultValue: false )
@@ -59,7 +54,6 @@ pipeline
 						version = params.tag
 						checkoutFromGIT(scm.userRemoteConfigs[0].url, "v${version}", true)
 					}
-					channel = params.stable ? "stable" : "testing"
 				}
 			}
 		}
@@ -70,7 +64,7 @@ pipeline
 			{
 				script
 				{
-					bat "conan export-pkg JSONAdapterInterface/conanfile.py JSONAdapterInterface/${version}@systelab/${channel} --force"
+					bat "conan export-pkg JSONAdapterInterface/conanfile.py --version ${version} --profile:all=${profile}"
 					archs.each
 					{ arch ->
 						configs.each
@@ -78,10 +72,10 @@ pipeline
 							stage("Build ${config}|${arch}")
 							{
 								def buildFolder = "build/${config}-${arch}"
-								bat "conan install JSONAdapterTestUtilities/conanfile.py --install-folder ${buildFolder} --profile=${profile} -s arch=${arch} -s build_type=${config} -e VERSION=${version} -e CHANNEL=${channel} --update"
-								bat "conan build JSONAdapterTestUtilities/conanfile.py --build-folder ${buildFolder}" 
-								bat "conan export-pkg JSONAdapterTestUtilities/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} --build-folder ${buildFolder} --force"
-								bat "conan test ./test_package/conanfile.py JSONAdapterTestUtilities/${version}@systelab/${channel} --profile=${profile} -s arch=${arch} -s build_type=${config}"
+								bat "conan install JSONAdapterTestUtilities/conanfile.py --version ${version} --output-folder ${buildFolder} --profile:all=${profile} --settings:host arch=${arch} --settings:host build_type=${config} --update"
+								bat "conan build JSONAdapterTestUtilities/conanfile.py --version ${version} --output-folder ${buildFolder} --profile:all=${profile} --settings:host arch=${arch} --settings:host build_type=${config}" 
+								bat "conan export-pkg JSONAdapterTestUtilities/conanfile.py --version ${version} --output-folder ${buildFolder} --profile:all=${profile} --settings:host arch=${arch} --settings:host build_type=${config}"
+								bat "conan test ./test_package/conanfile.py json-adapter-test-utilities/${version} --profile:all=${profile} --settings:host arch=${arch} --settings:host build_type=${config}"
 							}
 						}
 					}
@@ -99,8 +93,8 @@ pipeline
 			{
 				script
 				{
-					bat "conan upload JSONAdapterInterface/${version}@systelab/${channel} --all -r systelab-conan-local --force"
-					bat "conan upload JSONAdapterTestUtilities/${version}@systelab/${channel} --all -r systelab-conan-local --force"
+					bat "conan upload json-adapter-interface/${version} --remote aid-conan-production-local --confirm --force"
+					bat "conan upload json-adapter-test-utilities/${version} --remote aid-conan-production-local --confirm --force"
 				}
 			}
 		}
@@ -112,7 +106,7 @@ pipeline
 		{
 			script
 			{
-				currentBuild.description = "${version}/${channel}"
+				currentBuild.description = "${version}"
 			}
 			cleanupWorkspace()
 		}
