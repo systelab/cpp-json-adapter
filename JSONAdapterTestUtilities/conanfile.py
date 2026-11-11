@@ -16,7 +16,7 @@ class JSONAdapterTestUtilitiesConan(ConanFile):
     license = "MIT"
     package_type = "static-library"
     settings = "os", "compiler", "build_type", "arch"
-    exports_sources = "*", "!README.md", "!build*"
+    exports_sources = "*", "!README.md", "!build*", "!CMakeUserPresets.json"
 
     def requirements(self):
         self.requires("gtest/1.14.0", transitive_headers=True)
